@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-var age int = 30
+var age int32 = 30
 var username string = "shiyf"
 var score float32 = 1189.5
 var isOk bool = false
@@ -16,7 +16,6 @@ type Person struct {
 	age  int
 }
 
-//var P = Person{"huqilong", 36}
 var P = Person{age:32}
 
 const LENGTH int = 5
@@ -37,7 +36,7 @@ type T struct {
 }
 
 func main() {
-	fmt.Printf("Hello,%s,your score is:%.2f,what are you doing now?age:%d,are you ok?%t \n",
+	fmt.Printf("Hello,%s,your score s:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
 
 	a, b := 6, 8 //a,b,c 局部赋值优先
