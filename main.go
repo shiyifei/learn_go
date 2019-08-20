@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"hello"
 	"unsafe"
+	"project1"
 )
 
 var age int = 30
@@ -39,6 +41,9 @@ type T struct {
 func main() {
 	fmt.Printf("Hello,%s,your score is:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
+
+	//unsafe.Sizeof(age)返回占用字节数，32位系统下大小是 32 位（4 字节）, 64位系统下，age会占用 64 位（8 字节）的大小
+	fmt.Printf("type of age is:%T, size of age is:%d \n", age, unsafe.Sizeof(age))
 
 	a, b := 6, 8 //a,b,c 局部赋值优先
 
@@ -77,12 +82,19 @@ func main() {
 	t2 := (*int32)(unsafe.Pointer(uintptr(ptr) + unsafe.Offsetof(t.t2)))  	//指针移动到t.t2位置
 	fmt.Println(*t2)  //t.t2当前的值
 	*t2 = 99	//实际上会更改t.t2的值
-	fmt.Println(t)
+	fmt.Println(t) //可以直接打印一个stuct对象,其中的元素会用空格分开
 
 	t3 := (*int64)(unsafe.Pointer(uintptr(ptr) + unsafe.Offsetof(t.t3)))	//指针移动到t.t3位置
 	fmt.Println(*t3)  //t.t3当前的值
 	*t3 = 123  //实际上会更改t.t3的值
 	fmt.Println(t)
+
+
+	numC := project1.IntAdd(a, b)
+	fmt.Println("numC=", numC)
+
+	numD := hello.GetArea(a, b)
+	fmt.Println("numD=", numD)
 }
 
 func numbers() (int, int, string) {
