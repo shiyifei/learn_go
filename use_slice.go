@@ -38,14 +38,55 @@ func main() {
 
 	fmt.Println(sliceStr3)
 	fmt.Println(sliceStr4)
+
+	fmt.Println("before changing, sliceStr5:")
 	fmt.Println(sliceStr5)
 
-	fmt.Println("after changing sliceStr5:")
+
 	changeSlice(sliceStr5)  //切片是引用类型，在函数中改变内容的话,在函数外部能看到已经生效了。
+	fmt.Println("after changing sliceStr5:")
 	fmt.Println(sliceStr5)
+
+	languages := []string{"C","C++","Java","Go","PHP","Python","Ruby"}
+	already := languages[:len(languages)-2]
+
+	//这种赋值方法可以保证尽快地将languages数组做垃圾回收操作
+	var newAlready = make([]string, len(already))    //先声明同样大小的切片
+	copy(newAlready, already)						//生成一个切片的副本，原始数组就可以尽快被垃圾回收
+	fmt.Println("newAlready:",newAlready)
+
+	other := []string{"Object-C","Swift"}
+	newAlready = append(newAlready, other...)   //追加切片的正确写法
+	fmt.Println("after append other slice, newAlready:", newAlready)
+
+	//使用可变参数的函数来更改切片本身的值
+	change(other...)
+	fmt.Println("after changing, other:", other)
+
+	var other1 = make([]string, len(other))
+	copy(other1, other)
+	change1(other1)
+	fmt.Println("after 111 changing, other1:", other1)
 
 }
 
 func changeSlice(strSlice []string) {
 	strSlice[4] = "something"
+}
+
+func change(s ...string) {
+	s[0] = "Sql"
+	s = append(s, "C#") //追加的元素不会在函数外部显示
+	fmt.Println("inside  changing, s:", s)
+}
+
+/**
+切片包含长度、容量和指向数组第零个元素的指针。
+当切片传递给函数时，即使它通过值传递，指针变量也将引用相同的底层数组。
+因此，当切片作为参数传递给函数时，函数内所做的更改也会在函数外可见。让我们写一个程序来检查这点。
+ */
+func change1(s []string) {
+	s[0] = "Sql111"
+	s = append(s, "C#")  //追加的元素不会在函数外部显示，考虑一下原因
+	fmt.Println("inside 111 changing, s:", s)
 }
