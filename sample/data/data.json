@@ -1,0 +1,22 @@
+[
+  {
+    "site" : "npr",
+    "link" : "http://www.npr.org/rss/rss.php?id=1001",
+    "type" : "rss"
+  },
+  {
+    "site" : "jianshu",
+    "link" : "https://rsshub.app/jianshu/user/yZq3ZV",
+    "type" : "rss"
+  },
+  {
+    "site" : "foxnews",
+    "link" : "http://feeds.foxnews.com/foxnews/world?format=xml",
+    "type" : "rss"
+  },
+  {
+    "site" : "zhihu",
+    "link" : "https://rsshub.app/zhihu/hotlist",
+    "type" : "rss"
+  }
+]
