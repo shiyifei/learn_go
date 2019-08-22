@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"hello"
+	"hello/other"
 )
 
 func main() {
@@ -12,8 +12,7 @@ func main() {
 	a = 20
 	b = 30
 
-	area := hello.GetArea(a, b)
-
+	area := other.GetArea(a, b)
 	fmt.Println("area is:", area)
 
 }

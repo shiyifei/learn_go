@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"hello"
+	"hello/other"
 	"unsafe"
 	"project1"
 )
@@ -42,8 +42,16 @@ func main() {
 	fmt.Printf("Hello,%s,your score is:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
 
+	score = score + float32(age)  //强制类型转换，不然会报错
+	//unsafe.Sizeof(score)返回占用字节数
+	fmt.Printf("score is:%.2f, type of score is:%T, size of score is:%d \n", score, score, unsafe.Sizeof(score))
+
+
 	//unsafe.Sizeof(age)返回占用字节数，32位系统下大小是 32 位（4 字节）, 64位系统下，age会占用 64 位（8 字节）的大小
 	fmt.Printf("type of age is:%T, size of age is:%d \n", age, unsafe.Sizeof(age))
+
+	const strName string = "shiyf,what are you doing now?"
+	fmt.Printf("value of strName:%s,type of strName is:%T, size of strName is:%d \n", strName, strName, unsafe.Sizeof(strName))
 
 	a, b := 6, 8 //a,b,c 局部赋值优先
 
@@ -93,11 +101,24 @@ func main() {
 	numC := project1.IntAdd(a, b)
 	fmt.Println("numC=", numC)
 
-	numD := hello.GetArea(a, b)
+	numD := other.GetArea(a, b)
 	fmt.Println("numD=", numD)
+
+	var len float64 = 20.0
+	var width float64 = 30.0
+	var f11, f12 float64
+	f11,f12 = rectProps(len, width)
+
+	fmt.Println("area=",f11,",perimeter=",f12)
 }
 
 func numbers() (int, int, string) {
 	a, b, c := 1, 2, "are you ok?"
 	return a, b, c
+}
+
+func rectProps(length,width float64)(area, perimeter float64) {
+	area = length * width
+	perimeter = 2*(length+width)
+	return
 }
