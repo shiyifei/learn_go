@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"sample/search"
 
 	_"search"
 )
@@ -96,7 +97,7 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 			})
 		}
 
-		matched,err := regexp.MatchString(searchTerm, channelItem.Description)
+		matched,err = regexp.MatchString(searchTerm, channelItem.Description)
 		if err != nil {
 			return nil,err
 		}

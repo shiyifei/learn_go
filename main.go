@@ -109,10 +109,14 @@ func main() {
 	f11,f12 = rectProps(len, width)  //调用多个返回值的方法
 
 	fmt.Println("area=",f11,",perimeter=",f12)
+
+	printRows()
+
+	useSwitch()
 }
 
 /**
-返回多个值的方法，建议写法
+返回多个值的建议写法,比较好理解
  */
 func numbers() (int, int, string) {
 	a, b, c := 1, 2, "are you ok?"
@@ -126,4 +130,26 @@ func rectProps(length,width float64)(area, perimeter float64) {
 	area = length * width
 	perimeter = 2*(length+width)
 	return
+}
+
+
+func printRows() {
+	for i:=10;i<20;i++ {
+		for j:=1;j<=10;j++ {
+			if  j-1 == i-10 {
+				fmt.Printf("%d * %d = %d \n", i, j, i*j)
+			}
+		}
+	}
+}
+
+func useSwitch() {
+	letter := "i"
+	//switch不需要在每个case语句后写break;
+	switch letter {
+	case "a","e","i","o","u":
+		fmt.Println("这是一个元音字母")
+	default:
+		fmt.Println("这个一个非元音字母")
+	}
 }
