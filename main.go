@@ -66,7 +66,7 @@ func main() {
 	fmt.Printf("person name:%s,age:%d \n", P.name, P.age)
 	fmt.Println(P)
 
-	var _, ret, retStr = numbers()
+	var _, ret, retStr = numbers()  //调用多个返回值的方法
 	fmt.Println(ret, retStr)
 
 	var area int
@@ -106,16 +106,22 @@ func main() {
 	var len float64 = 20.0
 	var width float64 = 30.0
 	var f11, f12 float64
-	f11,f12 = rectProps(len, width)
+	f11,f12 = rectProps(len, width)  //调用多个返回值的方法
 
 	fmt.Println("area=",f11,",perimeter=",f12)
 }
 
+/**
+返回多个值的方法，建议写法
+ */
 func numbers() (int, int, string) {
 	a, b, c := 1, 2, "are you ok?"
 	return a, b, c
 }
 
+/**
+返回多个值的方法，不建议这样写，因为不好理解
+ */
 func rectProps(length,width float64)(area, perimeter float64) {
 	area = length * width
 	perimeter = 2*(length+width)
