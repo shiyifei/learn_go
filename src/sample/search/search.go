@@ -35,9 +35,7 @@ func Run(searchTerm string) {
 		wg.Wait()
 		close(results)
 	}()
-
 	Display(results)
-
 }
 
 func Register(feedType string, matcher Matcher) {

@@ -28,6 +28,6 @@ func Match(matcher Matcher, feed *Feed, searchTerm string, results chan<- *Resul
 
 func Display(results chan *Result) {
 	for result := range results {
-		fmt.Println("%s:\n%s:\n\n", result.Field, result.Content)
+		fmt.Println("%s:\n %s:\n\n", result.Field, result.Content)
 	}
 }
