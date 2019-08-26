@@ -55,7 +55,7 @@ func main() {
 	copy(newAlready, already)						//生成一个切片的副本，原始数组就可以尽快被垃圾回收
 	fmt.Println("newAlready:",newAlready)
 
-	other := []string{"Object-C","Swift"}
+	other := []string{"Object-C","Swift", "Erlang"}
 	newAlready = append(newAlready, other...)   //追加切片的正确写法
 	fmt.Println("after append other slice, newAlready:", newAlready)
 
@@ -65,8 +65,24 @@ func main() {
 
 	var other1 = make([]string, len(other))
 	copy(other1, other)
-	change1(other1)
-	fmt.Println("after 111 changing, other1:", other1)
+	fmt.Printf("before change1(), pointer:%p,cap: %d,", other1, cap(other1)) //获取切片的内存地址
+	fmt.Println("before change1(), other1:", other1)
+	change1(other1)  //
+	fmt.Printf("after change1(), pointer:%p,cap: %d,len:%d,", other1, cap(other1), len(other1)) //这里的地址仍然是以前的地址，所以修改有效，追加无效。
+	fmt.Println("after change1(), other1:", other1)
+
+
+	other1 = append(other1, "javascript")
+	fmt.Printf("before change2(), pointer:%p,cap: %d,len:%d,", other1, cap(other1), len(other1)) //获取切片的内存地址
+	fmt.Println("before change2(), other1:", other1)
+	change2(&other1)  //
+	fmt.Printf("after change2(), pointer:%p,cap: %d,", other1, cap(other1)) //这里的地址仍然是以前的地址，所以修改有效，追加无效。
+	fmt.Println("after change2(), other1:", other1)
+
+	other1 = append(other1, "vb.net", "shell") //一旦超出原有长度，会将原有的容量翻倍
+	fmt.Printf(" pointer:%p,cap: %d,len:%d \n", other1, cap(other1), len(other1))
+
+	useAppend()
 
 }
 
@@ -75,9 +91,9 @@ func changeSlice(strSlice []string) {
 }
 
 func change(s ...string) {
-	s[0] = "Sql"
+	s[0] = "Basic"
 	s = append(s, "C#") //追加的元素不会在函数外部显示
-	fmt.Println("inside  changing, s:", s)
+	fmt.Println("inside changing(), s:", s)
 }
 
 /**
@@ -86,7 +102,29 @@ func change(s ...string) {
 因此，当切片作为参数传递给函数时，函数内所做的更改也会在函数外可见。让我们写一个程序来检查这点。
  */
 func change1(s []string) {
-	s[0] = "Sql111"
-	s = append(s, "C#")  //追加的元素不会在函数外部显示，考虑一下原因
-	fmt.Println("inside 111 changing, s:", s)
+	s[0] = "Sql"
+	fmt.Printf("before append(), pointer:%p,cap: %d \n", s, cap(s))
+	s = append(s, "C#")  //append函数执行后，会导致s切片的地址发生变化，传入的切片与现在的切片已经不同
+	fmt.Printf("inside change1(), pointer:%p,cap: %d,", s, cap(s))
+	fmt.Println("inside change1(), s:", s)
+}
+
+/**
+	传入变量地址，将会在函数内外都修改生效
+ */
+func change2(s *[]string) {
+	(*s)[0] = "Oracle"
+	fmt.Printf("before append(), pointer:%p,cap: %d,len:%d, \n", *s, cap(*s), len(*s))
+	*s = append(*s, "C#")  //append函数执行后，会导致s切片的地址发生变化，传入的切片与现在的切片已经不同
+	fmt.Printf("inside change2(), pointer:%p,cap: %d,len:%d,", *s, cap(*s), len(*s))
+	fmt.Println("inside change2(), s:", *s)
+}
+
+
+func useAppend() {
+	var numbers []int
+	for i := 0; i < 10; i++ {
+		numbers = append(numbers, i)
+		fmt.Printf("len: %d  cap: %d pointer: %p\n", len(numbers), cap(numbers), numbers)
+	}
 }
