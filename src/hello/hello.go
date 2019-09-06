@@ -14,5 +14,4 @@ func main() {
 
 	area := other.GetArea(a, b)
 	fmt.Println("area is:", area)
-
 }
