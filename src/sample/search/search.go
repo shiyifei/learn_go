@@ -9,7 +9,7 @@ import (
 var matchers = make(map[string]Matcher)
 
 func Run(searchTerm string) {
-	feeds, err := RetriveFeeds()
+	feeds, err := RetrieveFeeds()
 	if err != nil {
 		log.Fatal(err)
 	}

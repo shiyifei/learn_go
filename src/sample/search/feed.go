@@ -1,3 +1,4 @@
+/**  订阅源 **/
 package search
 
 import (
@@ -14,9 +15,9 @@ type Feed struct {
 const dataFile = "/var/www/html/learn_go/src/sample/data/data.json"
 
 /**
-	读取并反序列化源数据文件，实际上是初始化请求源头
- */
-func RetriveFeeds() ([]*Feed, error){
+	读取并反序列化源数据文件，实际上是重新检索订阅源
+ **/
+func RetrieveFeeds() ([]*Feed, error){
 	file, err := os.Open(dataFile)
 	if err != nil {
 		return nil,err
