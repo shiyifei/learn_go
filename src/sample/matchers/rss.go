@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"regexp"
 	"sample/search"
-
-	_"search"
 )
 
 type (
@@ -58,7 +56,7 @@ func init() {
 
 func (m rssMatcher) retrieve(feed *search.Feed)(*rssDocument, error) {
 	if feed.Url == "" {
-		return nil, errors.New("No rss feed URI provided"),
+		return nil, errors.New("No rss feed URI provided")
 	}
 
 	resp, err := http.Get(feed.Url)
@@ -79,7 +77,7 @@ func (m rssMatcher) retrieve(feed *search.Feed)(*rssDocument, error) {
 
 func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Result, error) {
 	var results []*search.Result
-	log.Printf("Search Feed Type[%s],Site[%s] For Url[%s]\n", feed.Type, feed.Site, feed.Url)
+	log.Printf("Search Feed Type[%s],Site[%s] For Url[%s]\n", feed.Type, feed.Name, feed.Url)
 
 	document,err := m.retrieve(feed)
 	if err != nil {

@@ -7,16 +7,16 @@ import (
 
 type Feed struct {
 	Name string `json:"site"`
-	Url string `json:"url"`
+	Url string `json:"link"`
 	Type string `json:"type"`
 }
 
-const dataFile = "data/data.json"
+const dataFile = "/var/www/html/learn_go/src/sample/data/data.json"
 
 /**
 	读取并反序列化源数据文件
  */
-func RetrieveFeeds() ([]*Feed, error){
+func RetriveFeeds() ([]*Feed, error){
 	file, err := os.Open(dataFile)
 	if err != nil {
 		return nil,err
@@ -24,6 +24,6 @@ func RetrieveFeeds() ([]*Feed, error){
 	defer file.Close()
 
 	var feeds []*Feed
-	err = json.newDecoder(file).Decode(&feeds)
+	err = json.NewDecoder(file).Decode(&feeds)
 	return feeds, err
 }

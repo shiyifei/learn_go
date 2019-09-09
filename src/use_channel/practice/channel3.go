@@ -6,11 +6,14 @@ import (
 )
 
 /**
-	信道是用于在不同的routine之间发送接收数据使用的，在一个方法中同时有发送和接收操作不允许。
+	信道是用于在不同的routine之间发送接收数据使用的，在一个方法中同时有发送和接收操作会不起作用。
  */
 func receiveFromChan(chInt chan int) {
-	chInt <- 888
+	fmt.Println("in receiveFromChan(),111")
+	//chInt <- 888
+	fmt.Println("in receiveFromChan(),222")   	//如果13行代码不注释掉的话该语句不会执行。
 	fmt.Println("receive from chInt:", <-chInt)
+	fmt.Println("in receiveFromChan(),333")
 }
 
 /**
@@ -64,8 +67,9 @@ func Test() {
 	//fmt.Println("receive from chInt:", num)
 	//time.Sleep(200*time.Millisecond)  //即使加入延时，另一个协程也接收不到数据
 	//return
-	go receiveFromChan(chInt) //一个协程接收，携程中接收数据的写法不能生效
+	go receiveFromChan(chInt) //一个协程接收，如果该方法对信道既发送又接收，会导致接收语句不生效。
 	time.Sleep(200*time.Millisecond)
+
 
 	//声明一个仅支持发送数据的信道
 	chSend := make(chan<- int)

@@ -20,4 +20,6 @@ func main() {
 	writefile.WriteLineToFile(strInputs)
 	var input string = "tomorrow is weekend"
 	writefile.AppendStringToFile(input)
+
+	writefile.Test()
 }

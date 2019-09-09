@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 	channel "use_channel/practice"          //默认类名是practice,现在取别名为 channel1
 )
@@ -23,10 +22,10 @@ func main() {
 
 	//下面的程序会报错，在同一个协程中写入和读取信道，会导致阻塞死锁。
 	// 向信道发送数据要放到其他goroutine中，读取可以放在本协程或其他协程中。
-	chanTest := make(chan int)
+	/*chanTest := make(chan int)
 	chanTest <- 666
 	data := <- chanTest
 	fmt.Println("receive from chanTest:", data)
-	time.Sleep(100*time.Millisecond)
+	time.Sleep(100*time.Millisecond)*/
 }
 

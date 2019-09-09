@@ -1,6 +1,7 @@
 package search
 
 import (
+	"fmt"
 	"log"
 	"sync"
 )
@@ -12,14 +13,17 @@ func Run(searchTerm string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("feeds:",feeds)
+
 
 	results := make(chan *Result)
 
 	var wg sync.WaitGroup
 
 	wg.Add(len(feeds))
-
-	for _,feed := range feeds {
+	fmt.Println("matchers:",matchers)
+	for _, feed := range feeds {
+		fmt.Println("feed.Type:",feed.Type)
 		matcher, exists := matchers[feed.Type]
 		if !exists {
 			matcher = matchers["default"]
