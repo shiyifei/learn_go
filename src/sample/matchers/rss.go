@@ -84,7 +84,7 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 		return nil,err
 	}
 	for _,channelItem := range document.Channel.Item {
-		matched, err := regexp.MatchString(searchTerm, channelItem.Title)
+		matched, err := regexp.MatchString(searchTerm, channelItem.Title)  //先匹配获取记录中的Title字段
 		if err != nil {
 			return nil, err
 		}
@@ -95,7 +95,7 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 			})
 		}
 
-		matched,err = regexp.MatchString(searchTerm, channelItem.Description)
+		matched,err = regexp.MatchString(searchTerm, channelItem.Description)	//再匹配获取记录中的Description字段
 		if err != nil {
 			return nil,err
 		}
@@ -106,5 +106,5 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 			})
 		}
 	}
-	return results,nil
+	return results, nil
 }

@@ -13,5 +13,8 @@ func init() {
 }
 
 func main() {
-	search.Run("president")
+	var input string
+	input = "网红"
+	//input = "president"
+	search.Run(input)
 }
