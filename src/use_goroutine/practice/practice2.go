@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"fmt"
@@ -6,19 +6,18 @@ import (
 	"runtime"
 	"sync"
 )
-var wg sync.WaitGroup
 
 
-func main() {
+func Practice2() {
 	num := runtime.NumCPU()
 	fmt.Println("Number of CPU is:",num)
-	runtime.GOMAXPROCS(num)
-
+	runtime.GOMAXPROCS(1)
+	var wg sync.WaitGroup
 	wg.Add(2)
 
 	fmt.Println("Create Goroutines")
-	go PrintPrime("A")
-	go PrintPrime("B")
+	go PrintPrime("A", &wg)
+	go PrintPrime("B", &wg)
 
 	fmt.Println("Waiting To Finish")
 	wg.Wait()
@@ -26,8 +25,11 @@ func main() {
 	fmt.Println("Terminating Program")
 }
 
-//显示5000以内的素数
-func PrintPrime(prefix string) {
+/**
+	显示5000以内的素数,查找并显示素数会消耗不少时间，
+	这会让调度去有机会在第一个goroutine找到所有素数之前，切换该goroutine的时间片
+ */
+func PrintPrime(prefix string, wg * sync.WaitGroup) {
 	defer wg.Done()
 
 	next:

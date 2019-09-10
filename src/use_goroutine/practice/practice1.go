@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"fmt"
@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func main() {
+func Practice1() {
 	begin := time.Now()
 	//分配一个逻辑处理器给调度器使用,
-	runtime.GOMAXPROCS(1)
+	runtime.GOMAXPROCS(2)
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 
 	//wg用来等待程序完成 waitGroup是一个计数信号量，用来记录并维护运行的goroutine
@@ -31,6 +31,7 @@ func main() {
 				fmt.Printf("%c ", char)
 			}
 		}
+		fmt.Println()
 	}()
 
 	go func() {
@@ -41,6 +42,7 @@ func main() {
 				fmt.Printf("%c ",char)
 			}
 		}
+		fmt.Println()
 	}()
 
 	//等待goroutine结束
