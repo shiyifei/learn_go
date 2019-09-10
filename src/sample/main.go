@@ -14,7 +14,7 @@ func init() {
 
 func main() {
 	var input string
-	input = "网红"
+	input = "童年"
 	//input = "president"
 	search.Run(input)
 }
