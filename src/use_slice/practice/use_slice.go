@@ -1,21 +1,25 @@
-package main
+package practice
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+	"sort"
+)
 
-func main() {
+func InStepOperate() {
 	arrStr := [...]string{"java", "c","c++","python","c#","basic"}
+	fmt.Printf("arrStr: length=%d,cap=%d,type is: %T, value is:%v\n", len(arrStr), cap(arrStr), arrStr, arrStr)
 	sliceStr := arrStr[1:4:5]  //下标一表示起始位置，下标二表示结束位置（不包含该位置元素），下标三表示cap容量 cap=len+1,容量可以设置大于len+1
-	fmt.Println("len(arrStr),cap(arrStr)", len(arrStr), cap(arrStr))
-	fmt.Println(arrStr)
-	fmt.Println("len(sliceStr),cap(sliceStr)", len(sliceStr), cap(sliceStr))
-	fmt.Println(sliceStr)
+	printSlice(sliceStr)
 
 	sliceStr[0] = "Go"
 	fmt.Println("after assigning slice, arrStr:")
 	sliceStr = append(sliceStr, "ruby")
-	fmt.Println(arrStr)  //不超容量重新赋值后之前的数组会跟着改变
-	fmt.Println("len(sliceStr),cap(sliceStr)", len(sliceStr), cap(sliceStr))
-	fmt.Println(sliceStr)
+
+	//不超容量重新赋值后之前的数组会跟着改变
+	fmt.Printf("arrStr: length=%d,cap=%d,type is: %T, value is:%v\n", len(arrStr), cap(arrStr), arrStr, arrStr)
+
+	printSlice(sliceStr)
 
 	sliceStr2 := arrStr[1:4]
 	fmt.Println("after assigning slice again")
@@ -33,19 +37,23 @@ func main() {
 	sliceStr4[1] = "are"
 	sliceStr4 = append(sliceStr4, "you")
 
+	fmt.Println("copy sliceStr3 to sliceStr4 and update sliceStr4:")
+	fmt.Print("sliceStr4:")
+	printSlice(sliceStr4)
+	fmt.Print("sliceStr3:")
+	printSlice(sliceStr3)
+
 	sliceStr5 = sliceStr3[0:3]
 	sliceStr5 = append(sliceStr5, "do","not")
 
-	fmt.Println(sliceStr3)
-	fmt.Println(sliceStr4)
-
-	fmt.Println("before changing, sliceStr5:")
-	fmt.Println(sliceStr5)
+	fmt.Print("before changing, sliceStr5:")
+	printSlice(sliceStr5)
 
 
 	changeSlice(sliceStr5)  //切片是引用类型，在函数中改变内容的话,在函数外部能看到已经生效了。
-	fmt.Println("after changing sliceStr5:")
-	fmt.Println(sliceStr5)
+	fmt.Print("after changing sliceStr5:")
+	printSlice(sliceStr5)
+
 
 	languages := []string{"C","C++","Java","Go","PHP","Python","Ruby"}
 	already := languages[:len(languages)-2]
@@ -59,6 +67,7 @@ func main() {
 	newAlready = append(newAlready, other...)   //追加切片的正确写法
 	fmt.Println("after append other slice, newAlready:", newAlready)
 
+	fmt.Println("before changing, other:", other)
 	//使用可变参数的函数来更改切片本身的值
 	change(other...)
 	fmt.Println("after changing, other:", other)
@@ -84,22 +93,34 @@ func main() {
 
 	useAppend()
 
+	arrInt := []int{12,34,1,4,5,6,7,23,56,12,34,56}
+	sort.Ints(arrInt)
+	arrUnique := RemoveDuplicate(arrInt)
+	fmt.Println("   arrInt:", arrInt)
+	fmt.Println("arrUnique:", arrUnique)
+
 }
 
+/*
+	只修改其中的元素值会在函数体外生效
+ */
 func changeSlice(strSlice []string) {
 	strSlice[4] = "something"
 }
 
+/*
+	函数内部追加写入的数据不会在外部生效，因为append函数执行后，会导致s切片的地址发生变化，传入的切片与外部的切片已经不同
+ */
 func change(s ...string) {
 	s[0] = "Basic"
 	s = append(s, "C#") //追加的元素不会在函数外部显示
-	fmt.Println("inside changing(), s:", s)
+	fmt.Println("inside change(), s:", s)
 }
 
-/**
-切片包含长度、容量和指向数组第零个元素的指针。
-当切片传递给函数时，即使它通过值传递，指针变量也将引用相同的底层数组。
-因此，当切片作为参数传递给函数时，函数内所做的更改也会在函数外可见。让我们写一个程序来检查这点。
+/*
+	切片包含长度、容量和指向数组第零个元素的指针。
+	当切片传递给函数时，即使它通过值传递，指针变量也将引用相同的底层数组。
+	因此，当切片作为参数传递给函数时，函数内所做的更改也会在函数外可见。让我们写一个程序来检查这点。
  */
 func change1(s []string) {
 	s[0] = "Sql"
@@ -110,7 +131,7 @@ func change1(s []string) {
 }
 
 /**
-	传入变量地址，将会在函数内外都修改生效
+	传入变量地址，函数内部的修改将会在函数内外都生效
  */
 func change2(s *[]string) {
 	(*s)[0] = "Oracle"
@@ -120,11 +141,42 @@ func change2(s *[]string) {
 	fmt.Println("inside change2(), s:", *s)
 }
 
-
+/*
+	向切片中增加元素时会导致容量(cap)成倍递增
+ */
 func useAppend() {
 	var numbers []int
 	for i := 0; i < 10; i++ {
 		numbers = append(numbers, i)
 		fmt.Printf("len: %d  cap: %d pointer: %p\n", len(numbers), cap(numbers), numbers)
 	}
+}
+
+/*
+	slice中元素去重
+ */
+func RemoveDuplicate(s interface{}) (ret []interface{}) {
+	if reflect.TypeOf(s).Kind() != reflect.Slice {
+		return ret
+	}
+
+	va := reflect.ValueOf(s)
+	for i:=0;i<va.Len();i++ {
+		if i>0 {
+			fmt.Println("compare ",va.Index(i-1).Interface(), va.Index(i).Interface())
+		}
+
+		//判断是否与之前的值相等,如果相等则放弃
+		if i>0 && reflect.DeepEqual(va.Index(i-1).Interface(), va.Index(i).Interface()) {
+			continue
+		}
+		ret = append(ret, va.Index(i).Interface())
+	}
+	return ret
+}
+
+
+
+func printSlice(arr []string) {
+	fmt.Printf("length=%d,cap=%d,type is: %T, value is:%v\n", len(arr), cap(arr), arr, arr)
 }

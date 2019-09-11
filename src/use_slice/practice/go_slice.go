@@ -1,4 +1,4 @@
-package main
+package practice
 import "fmt"
 type Book struct{
 	name string 
@@ -8,34 +8,40 @@ type Book struct{
 }
 
 
-func main() {
+func BasicOperate() {
+	//未设置长度的数组即为切片(slice)
 	numbers := []int{1,2,4,5,6,7}
-
 	printArr(numbers)
-	
+
+	//数组的赋值
 	var arrInt = make([]int,3,10)
 	arrInt[0] = 11
 	arrInt[1] = 12
 	arrInt[2] = 13
-
 	printArr(arrInt)
+
+	if  arrInt == nil {
+		fmt.Println("arrInt is Empty")
+	}
+	//从数组中截取一段作为切片的值
+	arrInt =  numbers[1:4]  //截取数组， 会包含下标为1,2,3的数据 4-1=3，长度应该为3
+	printArr(arrInt)
+
+	arrObj := numbers[0:5]
+	printArr(arrObj)
+
+	//如何删除切片中的单个元素
+	var indexNeedDel = 2
+	arrObj = append(arrObj[:indexNeedDel], arrObj[indexNeedDel+1:]...)
+	fmt.Printf("after deleting index 2:")
+	printArr(arrObj)
+
 
 	var arrStr [3]string
 	arrStr[0] = "are you ok ?"
 	arrStr[1] = "hello"
 	arrStr[2] = "how do you do"
-
 	fmt.Println(arrStr)  //数组可以直接输出，中间用空格分开，如果元素中有空格就会导致区分不出每一个元素。
-	
-	
-	if  arrInt == nil {
-		fmt.Println("arrInt is Empty")
-	}
-	arrInt =  numbers[1:4]  //截取数组， 会包含下标为1,2,3的数据 4-1=3，长度应该为3
-	fmt.Printf("arrInt,length=%d,cap=%d,value=%v\n",len(arrInt),cap(arrInt),arrInt)
-
-	arrObj := numbers[0:5]
-	printArr(arrObj)
 
 	var book1 Book
 	book1.name ="php"
@@ -76,8 +82,8 @@ func printArr(arr []int) {
 	fmt.Printf("length=%d,cap=%d,type is: %T, value is:%v\n", len(arr), cap(arr), arr, arr)
 }
 
-/**
-输出对象数组中的每一个元素
+/*
+	输出对象数组中的每一个元素
  */
 func printBookArr(arr []Book) {
 	for i:=0; i<len(arr); i++ {
