@@ -1,3 +1,6 @@
 bin/*
 .idea/*
 idea/*
+src/mysql/
+
+
