@@ -5,6 +5,10 @@ import(
 )
 
 func main() {
-	UseMysql.InsertToDB()
-	UseMysql.SelectMultiUser()
+	dbAccess := UseMysql.ConnectToDB()
+	dbAccess.InsertOne()
+	dbAccess.SelectMultiUser()
+	dbAccess.SelectOneUser(2001)
+	dbAccess.UpdateRecord(2001)
+	dbAccess.DeleteRecord(2001)
 }
