@@ -11,4 +11,5 @@ func main() {
 	dbAccess.SelectOneUser(2001)
 	dbAccess.UpdateRecord(2001)
 	dbAccess.DeleteRecord(2001)
+	dbAccess.ExecTrans()
 }

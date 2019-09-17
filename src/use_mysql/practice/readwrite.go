@@ -120,6 +120,37 @@ func (worker *DBAccess) DeleteRecord(id int) {
 	worker.SelectOneUser(id)
 }
 
+func (worker *DBAccess) ExecTrans() {
+	tx, err := worker.Db.Begin()
+	checkErr(err)
+
+	ret1, err := tx.Exec("update users set username=\"guoxiaofeng\" where id=?",1000)
+	if err != nil {
+		panic(err)
+		defer tx.Rollback()
+	}
+	num1, err := ret1.RowsAffected()
+	if err != nil {
+		panic(err)
+		defer tx.Rollback()
+	}
+	ret2, err := tx.Exec("update users set username=\"guoke\" where id=?",1001)
+	if err != nil {
+		panic(err)
+		defer tx.Rollback()
+	}
+	num2, err := ret2.RowsAffected()
+	if err != nil {
+		panic(err)
+		defer tx.Rollback()
+	}
+	if num1>0 && num2>0 {
+		tx.Commit()
+	} else {
+		tx.Rollback()
+	}
+}
+
 /**
 	程序中断抛出异常
  */
