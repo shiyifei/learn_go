@@ -120,6 +120,9 @@ func (worker *DBAccess) DeleteRecord(id int) {
 	worker.SelectOneUser(id)
 }
 
+/*
+	测试数据库事务
+ */
 func (worker *DBAccess) ExecTrans() {
 	tx, err := worker.Db.Begin()
 	checkErr(err)
