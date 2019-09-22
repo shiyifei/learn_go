@@ -2,5 +2,6 @@ bin/*
 .idea/*
 idea/*
 src/mysql/
-
+go_mod/vendor/*
+pkg/mod/*
 
