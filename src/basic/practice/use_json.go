@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"encoding/json"
@@ -32,7 +32,7 @@ type Message struct {
 	Name string
 }
 
-func main() {
+func AboutJson() {
 	var obj = ajaxReturn("ok", "")
 	fmt.Printf("obj.code=%s,obj.msg=%s \n", obj["code"], obj["msg"])
 	jsonToStruct()

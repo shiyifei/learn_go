@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"os/user"
 )
 
-func main() {
+func AboutSetuid() {
 	file, err := os.Open("my_shadow.txt")
 	if err != nil {
 		log.Fatal(err)

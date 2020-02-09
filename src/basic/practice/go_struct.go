@@ -1,4 +1,4 @@
-package main
+package practice
 import "fmt"
 
 type Student struct {
@@ -7,7 +7,7 @@ type Student struct {
 	age int
 }
 
-func main() {
+func AboutStruct() {
 	var student1 Student
 	var student2 Student
 

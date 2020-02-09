@@ -1,4 +1,4 @@
-package main
+package practice
 
 import "fmt"
 
@@ -8,7 +8,7 @@ type Employee struct {
 }
 
 
-func main() {
+func AboutMethod() {
 	var emp Employee
 	emp.Name = "wanggengke"
 	emp.Age = 35

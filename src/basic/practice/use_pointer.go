@@ -1,11 +1,11 @@
-package main
+package practice
 
 import (
 	"fmt"
 	"unsafe"
 )
 
-func main() {
+func AbountPointer() {
 	var f32 float32 = 3.1415926
 	pointer := unsafe.Pointer(&f32)
 	fmt.Println(pointer)

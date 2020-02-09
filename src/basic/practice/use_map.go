@@ -1,11 +1,11 @@
 /**
 	map是引用类型，重新赋值后修改其中元素的值会影响之前的变量的值。
  */
-package main
+package practice
 
 import "fmt"
 
-func main() {
+func AboutMap() {
 	var empSalary map[string]int
 
 	empSalary = make(map[string]int)

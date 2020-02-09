@@ -25,4 +25,17 @@ func main() {
 	total := practice.TotalExpense(employees)
 	fmt.Printf("Total expense Per Month is $%d\n", total)
 
+
+	//实例3，模拟自定义类型实现接口，以指针的方式
+	var sortableStrs practice.SortableStrs
+	sortableStrs = practice.SortableStrs{"b1", "a2", "c4"}
+	_,ok := interface{}(&sortableStrs).(practice.Sortable)
+	fmt.Println(ok)
+
+	_,ok = interface{}(&sortableStrs).(practice.SortInterface)
+	fmt.Println(ok)
+
+	sortableStrs.Sort()
+	fmt.Printf("after sort(), %v \n", sortableStrs)
+
 }

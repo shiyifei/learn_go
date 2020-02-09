@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-func main() {
+func AboutPipiline() {
 	cmd0 := exec.Command("echo", "-n", "What are you doing now? shiyf. I am learning golang")
 	stdout0,err := cmd0.StdoutPipe()
 	if err != nil {

@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func main() {
+func AboutProcess() {
 	if len(os.Args) < 2 {
 		fmt.Printf("Usage: %s [command] \n", os.Args[0])
 		os.Exit(0)

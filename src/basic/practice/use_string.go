@@ -1,11 +1,11 @@
-package main
+package practice
 
 import (
 	"fmt"
 	"unicode/utf8"
 )
 
-func main() {
+func AboutString() {
 	var name string
 	name= "hello, what are you doing now?"
 	printBytes(name)

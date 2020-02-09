@@ -1,4 +1,4 @@
-package main
+package practice
 
 import "fmt"
 
@@ -22,7 +22,7 @@ func fibonacci(c, quit chan int) {
 	}
 }
 
-func main() {
+func AboutSelect() {
 	c := make(chan int)
 	quit := make(chan int)
 

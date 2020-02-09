@@ -1,7 +1,7 @@
-package main
+package practice
 import "fmt"
 
-func main() {
+func Fibnach() {
 	fmt.Println(fib(34))
 }
 

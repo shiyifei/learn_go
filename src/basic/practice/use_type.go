@@ -1,4 +1,4 @@
-package main
+package practice
 
 import (
 	"crypto/md5"
@@ -10,7 +10,7 @@ import (
 //自定义的函数类型，函数值可以作为其他函数的参数
 type Encipher func(input string) []byte
 
-func main() {
+func AbountType() {
 	var input string
 	input = "areyouok"
 	var out string
