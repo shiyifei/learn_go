@@ -15,4 +15,19 @@ func main() {
 	area := other.GetArea(a, b)
 	fmt.Println("area is:", area)
 
+	var records []map[string]string
+	var record map[string]string
+	record = make(map[string]string)
+	record["a"] = "areyouok"
+	record["b"] = "howareyou"
+
+
+	records = append(records, record)
+
+
+
+	fmt.Println(record)
+
+	fmt.Println(records)
+
 }
