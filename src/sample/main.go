@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	_ "sample/matchers"
-	"sample/search"
+	_ "matchers"
+	"search"
 )
 
 func init() {
@@ -13,8 +13,5 @@ func init() {
 }
 
 func main() {
-	var input string
-	input = "童年"
-	//input = "president"
-	search.Run(input)
+	search.Run("president")
 }

@@ -15,8 +15,8 @@
     "type" : "rss"
   },
   {
-    "site" : "baidutieba",
-    "link" : "https://rsshub.app/tieba/forum/good/%E5%81%A5%E5%BA%B7",
+    "site" : "zhihu",
+    "link" : "https://rsshub.app/zhihu/hotlist",
     "type" : "rss"
   }
 ]

@@ -1,4 +1,4 @@
-package practice
+package main
 
 import (
 	"bytes"
@@ -17,7 +17,7 @@ const (
 	logSn = 666
 )
 
-func ClientStart() {
+func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go clientDoWork(11, wg)

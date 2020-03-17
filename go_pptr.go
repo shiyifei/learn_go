@@ -1,7 +1,7 @@
-package practice
+package main
 import "fmt"
 
-func AboutPptr(){
+func main(){
 	var a int
 	var ptr *int
 	var pptr **int

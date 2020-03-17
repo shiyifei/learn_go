@@ -1,7 +1,6 @@
 package search
 
 import (
-	"fmt"
 	"log"
 	"sync"
 )
@@ -9,21 +8,18 @@ import (
 var matchers = make(map[string]Matcher)
 
 func Run(searchTerm string) {
-	feeds, err := RetrieveFeeds()
+	feeds, err := RetriveFeeds()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("feeds:",feeds)
-
 
 	results := make(chan *Result)
 
 	var wg sync.WaitGroup
 
 	wg.Add(len(feeds))
-	fmt.Println("matchers:",matchers)
-	for _, feed := range feeds {
-		fmt.Println("feed.Type:",feed.Type)
+
+	for _,feed := range feeds {
 		matcher, exists := matchers[feed.Type]
 		if !exists {
 			matcher = matchers["default"]
@@ -39,7 +35,9 @@ func Run(searchTerm string) {
 		wg.Wait()
 		close(results)
 	}()
+
 	Display(results)
+
 }
 
 func Register(feedType string, matcher Matcher) {

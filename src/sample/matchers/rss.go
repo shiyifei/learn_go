@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"regexp"
 	"sample/search"
+
+	_"search"
 )
 
 type (
@@ -77,14 +79,14 @@ func (m rssMatcher) retrieve(feed *search.Feed)(*rssDocument, error) {
 
 func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Result, error) {
 	var results []*search.Result
-	log.Printf("Search Feed Type[%s],Site[%s] For Url[%s]\n", feed.Type, feed.Name, feed.Url)
+	log.Printf("Search Feed Type[%s],Site[%s] For Url[%s]\n", feed.Type, feed.Site, feed.Url)
 
 	document,err := m.retrieve(feed)
 	if err != nil {
 		return nil,err
 	}
 	for _,channelItem := range document.Channel.Item {
-		matched, err := regexp.MatchString(searchTerm, channelItem.Title)  //先匹配获取记录中的Title字段
+		matched, err := regexp.MatchString(searchTerm, channelItem.Title)
 		if err != nil {
 			return nil, err
 		}
@@ -95,7 +97,7 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 			})
 		}
 
-		matched,err = regexp.MatchString(searchTerm, channelItem.Description)	//再匹配获取记录中的Description字段
+		matched,err = regexp.MatchString(searchTerm, channelItem.Description)
 		if err != nil {
 			return nil,err
 		}
@@ -106,5 +108,5 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string)([]*search.Resul
 			})
 		}
 	}
-	return results, nil
+	return results,nil
 }

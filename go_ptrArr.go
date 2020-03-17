@@ -1,9 +1,9 @@
-package practice
+package main 
 
 import "fmt"
 const MAX int = 3
 
-func AboutPtrArr() {
+func main() {
 	a := []int{10,20,100}
 	var i int
 	

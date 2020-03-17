@@ -1,4 +1,4 @@
-package practice
+package main
 
 import (
 	"bytes"
@@ -17,8 +17,7 @@ const (
 	DELIMITER = '\t'
 	logSn = 666
 )
-
-func ServerStart() {
+func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go doWork(wg)

@@ -1,10 +1,10 @@
-package practice
+package main
 
 import "fmt"
 
 type cb func(int) int
 
-func AboutCallback() {
+func main() {
 	testCallBack(2,callBack)
 	testCallBack(3,mul)
 	testCallBack(4,func(a int) int {

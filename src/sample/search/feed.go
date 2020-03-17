@@ -1,4 +1,3 @@
-/**  订阅源 **/
 package search
 
 import (
@@ -8,15 +7,15 @@ import (
 
 type Feed struct {
 	Name string `json:"site"`
-	Url string `json:"link"`
+	Url string `json:"url"`
 	Type string `json:"type"`
 }
 
-const dataFile = "/var/www/html/learn_go/src/sample/data/data.json"
+const dataFile = "data/data.json"
 
 /**
-	读取并反序列化源数据文件，实际上是重新检索订阅源
- **/
+	读取并反序列化源数据文件
+ */
 func RetrieveFeeds() ([]*Feed, error){
 	file, err := os.Open(dataFile)
 	if err != nil {
@@ -25,6 +24,6 @@ func RetrieveFeeds() ([]*Feed, error){
 	defer file.Close()
 
 	var feeds []*Feed
-	err = json.NewDecoder(file).Decode(&feeds)   //将file文件转为结构体实例
+	err = json.newDecoder(file).Decode(&feeds)
 	return feeds, err
 }

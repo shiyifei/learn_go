@@ -1,4 +1,4 @@
-package practice
+package main
 
 import ("fmt" 
 "math")
@@ -14,7 +14,7 @@ func max(num1,num2 int) int {
 	return result
 }
 
-func AboutFunc() {
+func main() {
 	var a int = 80
 	var b int = 79
 	var ret int
