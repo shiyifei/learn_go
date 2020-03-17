@@ -1,4 +1,4 @@
-package main 
+package practice
 
 import "fmt"
 const MAX int = 3

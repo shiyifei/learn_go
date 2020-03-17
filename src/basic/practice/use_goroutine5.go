@@ -1,7 +1,7 @@
 /**
 	使用互斥锁(mutex)解决两个goroutine引发数据竞争的情况，竞争状态的存在让并发程序变得复杂，十分容易引起潜在问题。
  */
-package main
+package practice
 
 import (
 	"fmt"

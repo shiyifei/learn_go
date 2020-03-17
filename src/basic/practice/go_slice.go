@@ -1,4 +1,4 @@
-package main
+package practice
 import "fmt"
 type Book struct{
 	name string 

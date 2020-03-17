@@ -1,7 +1,7 @@
 /**
 	一种修正代码、消除竞争状态的办法是,使用Go语言提供的锁机制，锁住共享资源从而保证goroutine的同步状态
  */
-package main
+package practice
 
 import (
 	"fmt"
