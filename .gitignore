@@ -1,15 +1,9 @@
 bin/*
 .idea/*
 idea/*
-<<<<<<< HEAD
-src/mysql/
-/vendor/*
-pkg/*
-=======
 vendor/
 src/github.com/
 pkg/
 src/golang.org/
 src/gopkg.in/
->>>>>>> a8c918e90ac59047606ba621d6d950916389596e
 
