@@ -6,4 +6,5 @@ src/github.com/
 pkg/
 src/golang.org/
 src/gopkg.in/
-
+go.mod
+go.sum
