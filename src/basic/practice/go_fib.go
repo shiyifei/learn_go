@@ -1,7 +1,7 @@
 package practice
 import "fmt"
 
-func main() {
+func Go_fib() {
 	fmt.Println(fib(34))
 }
 
