@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"hello/other"
 	"unsafe"
-	"project1"
 )
 
 var age int32 = 30
@@ -37,7 +36,7 @@ type T struct {
 	t5 bool
 }
 
-func main() {
+func Test() {
 	fmt.Printf("Hello,%s,your score s:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
 
@@ -95,10 +94,6 @@ func main() {
 	fmt.Println(*t3)  //t.t3当前的值
 	*t3 = 123  //实际上会更改t.t3的值
 	fmt.Println(t)
-
-
-	numC := project1.IntAdd(a, b)
-	fmt.Println("numC=", numC)
 
 	numD := other.GetArea(a, b)
 	fmt.Println("numD=", numD)

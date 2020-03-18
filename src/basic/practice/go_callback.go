@@ -4,7 +4,7 @@ import "fmt"
 
 type cb func(int) int
 
-func main() {
+func Go_callback() {
 	testCallBack(2,callBack)
 	testCallBack(3,mul)
 	testCallBack(4,func(a int) int {
