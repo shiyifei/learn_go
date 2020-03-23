@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"use_gin/app/common"
 	_ "github.com/go-sql-driver/mysql"
+	"use_gin/app/common"
 )
 
 var SqlDB * sql.DB
@@ -17,5 +17,10 @@ func init() {
 	common.CheckErr(err)
 	err = SqlDB.Ping()
 	common.CheckErr(err)
+
+	SqlDB.SetMaxOpenConns(5)
+	SqlDB.SetMaxIdleConns(1)
+
+	//SqlDB.SetConnMaxLifetime(time.Second*10)
 }
 

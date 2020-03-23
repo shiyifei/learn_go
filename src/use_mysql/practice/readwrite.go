@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"math/rand"
-	_ "mysql"
+	 _ "github.com/go-sql-driver/mysql"
 	"strconv"
 )
 
@@ -151,14 +151,5 @@ func (worker *DBAccess) ExecTrans() {
 		tx.Commit()
 	} else {
 		tx.Rollback()
-	}
-}
-
-/**
-	程序中断抛出异常
- */
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
 	}
 }
