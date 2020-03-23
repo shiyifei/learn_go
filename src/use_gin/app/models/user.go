@@ -19,6 +19,9 @@ func (p * Users) GetUsers() ([]Users, error){
 
 	var records []Users
 	records = make([]Users, 0)
+
+	//time.Sleep(time.Second *5)
+
 	for rows.Next() {
 		var user Users
 		err = rows.Scan(&user.Id, &user.UserName, &user.Email, &user.CreateTime)

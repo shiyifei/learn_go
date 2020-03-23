@@ -3,6 +3,8 @@ package practice
 import(
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+    "time"
+	"fmt"
 )
 
 var SqlDB *sql.DB
@@ -13,17 +15,28 @@ func init() {
 	checkErr(err)
 	err = SqlDB.Ping()
 	checkErr(err)
+
+    SqlDB.SetMaxOpenConns(4)
+    SqlDB.SetMaxIdleConns(2)
+
+    //SqlDB.SetConnMaxLifetime(time.Second*10)
 }
 
-func ReadData() []map[string]string {
-	rows, err := SqlDB.Query("select * from users order by id desc limit 0,10")
+
+//测试读数据和连接池使用效果
+func ReadData(offset int) []map[string]string {
+	rows, err := SqlDB.Query("select * from users order by id desc limit ?,10", offset)
 	checkErr(err)
 	columns, _ := rows.Columns()
+
+    fmt.Println(columns)
 	scanArgs := make([]interface{}, len(columns))
 	values := make([]interface{}, len(columns))
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
+    //time.Sleep(time.Second * 5) //测试连接池效果，保持db连接不释放
+
 	var records []map[string]string
 	for rows.Next() {
 		err = rows.Scan(scanArgs...)
@@ -36,6 +49,43 @@ func ReadData() []map[string]string {
 		records = append(records, record)
 	}
 	return records
+}
+
+func SelectMultiUser(offset int) {
+	rows, err := SqlDB.Query("select * from users order by id desc limit ?,10",offset)
+	checkErr(err)
+
+	columns, err := rows.Columns()
+	checkErr(err)
+	scanArgs := make([]interface{}, len(columns))
+	values := make([][]byte, len(columns))
+	for i := range values {
+		scanArgs[i] = &values[i]
+	}
+	time.Sleep(time.Second * 5) //测试连接池效果，保持db连接不释放
+	for rows.Next() {
+		rerr := rows.Scan(scanArgs...)
+		checkErr(rerr)
+		//单行
+		record := make(map[string]string)
+		for k,v := range values {
+			if v != nil {
+				record[columns[k]] = string(v)
+			}
+		}
+		fmt.Println(record)
+	}
+	defer rows.Close()
+	//defer worker.Db.Close()
+}
+
+/*
+    测试是否使用连接池
+ */
+func TestConnectionPool(page int) {
+    for page=0; page<10; page++ {
+		SelectMultiUser(page)
+    }
 }
 
 func Insert(username, email string) (int64, error) {
