@@ -7,11 +7,42 @@ import (
 	"strconv"
 	"use_gin/app/common"
 	"use_gin/app/models"
+	"use_gin/app/services"
 )
 
 
 func IndexApi(c *gin.Context) {
 	c.String(http.StatusOK, "It works")
+}
+
+func UserLogin(c *gin.Context) {
+	userName := c.Request.FormValue("username")
+	password := c.Request.FormValue("password")
+	authcode := c.Request.FormValue("checkcode")
+	loginService := services.JwtLoginService{}
+	err := loginService.UserLogin(userName, password, authcode)
+	msg := "ok"
+	if err != nil {
+		msg = err.Error()
+		c.JSON(http.StatusOK, gin.H{"msg":msg})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"msg":msg})
+	return
+}
+
+func CheckToken(c *gin.Context) {
+	token := c.Request.FormValue("token")
+	loginService := services.JwtLoginService{}
+	err := loginService.GetUserInfoByToken(token)
+	msg := "ok"
+	if err != nil {
+		msg = err.Error()
+		c.JSON(http.StatusOK, gin.H{"msg":msg})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"msg":msg})
+	return
 }
 
 func AddUser(c *gin.Context) {
