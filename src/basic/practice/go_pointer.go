@@ -2,7 +2,7 @@ package practice
 
 import "fmt"
 
-func main() {
+func Go_Pointer() {
 	var a int = 20
 	var ip *int
 

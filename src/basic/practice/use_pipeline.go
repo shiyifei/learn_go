@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-func main() {
+func UsePipeline() {
 	cmd0 := exec.Command("echo", "-n", "What are you doing now? shiyf. I am learning golang")
 	stdout0,err := cmd0.StdoutPipe()
 	if err != nil {

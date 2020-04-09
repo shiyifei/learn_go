@@ -2,7 +2,7 @@ package practice
 
 import "fmt"
 
-func main() {
+func UseSlice() {
 	arrStr := [...]string{"java", "c","c++","python","c#","basic"}
 	sliceStr := arrStr[1:4:5]  //下标一表示起始位置，下标二表示结束位置（不包含该位置元素），下标三表示cap容量 cap=len+1,容量可以设置大于len+1
 	fmt.Println("len(arrStr),cap(arrStr)", len(arrStr), cap(arrStr))

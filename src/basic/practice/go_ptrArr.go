@@ -3,7 +3,7 @@ package practice
 import "fmt"
 const MAX int = 3
 
-func main() {
+func Go_ptrArr() {
 	a := []int{10,20,100}
 	var i int
 	

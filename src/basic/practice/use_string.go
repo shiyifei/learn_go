@@ -5,7 +5,7 @@ import (
 	"unicode/utf8"
 )
 
-func main() {
+func UseString() {
 	var name string
 	name= "hello, what are you doing now?"
 	printBytes(name)

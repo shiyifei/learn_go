@@ -2,7 +2,6 @@ package practice
 
 import (
 	"fmt"
-	"hello/other"
 	"unsafe"
 )
 
@@ -36,7 +35,7 @@ type T struct {
 	t5 bool
 }
 
-func Test() {
+func Go_basic() {
 	fmt.Printf("Hello,%s,your score s:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
 
@@ -94,9 +93,6 @@ func Test() {
 	fmt.Println(*t3)  //t.t3当前的值
 	*t3 = 123  //实际上会更改t.t3的值
 	fmt.Println(t)
-
-	numD := other.GetArea(a, b)
-	fmt.Println("numD=", numD)
 
 	var len float64 = 20.0
 	var width float64 = 30.0

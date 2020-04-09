@@ -8,7 +8,7 @@ import (
 	"os/user"
 )
 
-func main() {
+func UseSetuid() {
 	file, err := os.Open("my_shadow.txt")
 	if err != nil {
 		log.Fatal(err)

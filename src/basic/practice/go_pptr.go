@@ -1,7 +1,7 @@
 package practice
 import "fmt"
 
-func main(){
+func Go_Pptr(){
 	var a int
 	var ptr *int
 	var pptr **int
