@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"use_gin/app/common"
 	db "use_gin/app/database"
 )
@@ -10,6 +12,42 @@ type Users struct {
 	UserName	string `json:"username" form:"username"`
 	Email		string `json:"email" form:"email"`
 	CreateTime 	string `json:"createtime"`
+}
+
+
+func (p * Users) CheckUserPwd(username,password string) (Users, error) {
+	rows,err := db.SqlDB.Query("select id,username,email,createtime from users where username=? and userpwd=?", username, password)
+
+	fmt.Println("in CheckUserPwd ", rows, err, " end ")
+	defer rows.Close()
+	common.CheckErr(err)
+	var user Users
+
+	var count int =0
+	for rows.Next() {
+		count += 1
+		err = rows.Scan(&user.Id, &user.UserName, &user.Email, &user.CreateTime)
+		common.CheckErr(err)
+	}
+	if count == 0 {
+		return user, errors.New("no data")
+	}
+	err = rows.Err()
+	fmt.Println("in CheckUserPwd  rows.Err:",  err, " end ")
+
+	return user, nil
+}
+
+func (p * Users) GetUserByName(username string) (Users, error) {
+	rows, err := db.SqlDB.Query("select id,username,email,createtime from users where username=? limit 1", username)
+	defer rows.Close()
+	common.CheckErr(err)
+	var user Users
+	for rows.Next() {
+		err = rows.Scan(&user.Id, &user.UserName, &user.Email, &user.CreateTime)
+		common.CheckErr(err)
+	}
+	return user, nil
 }
 
 func (p * Users) GetUsers() ([]Users, error){

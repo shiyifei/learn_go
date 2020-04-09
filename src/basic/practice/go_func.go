@@ -14,7 +14,7 @@ func max(num1,num2 int) int {
 	return result
 }
 
-func Go_func() {
+func Go_Func() {
 	var a int = 80
 	var b int = 79
 	var ret int

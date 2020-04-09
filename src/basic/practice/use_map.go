@@ -5,7 +5,7 @@ package practice
 
 import "fmt"
 
-func main() {
+func UseMap() {
 	var empSalary map[string]int
 
 	empSalary = make(map[string]int)

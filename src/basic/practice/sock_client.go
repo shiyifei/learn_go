@@ -17,7 +17,7 @@ const (
 	logSn = 666
 )
 
-func main() {
+func Sock_client() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go clientDoWork(11, wg)

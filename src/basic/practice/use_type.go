@@ -1,4 +1,8 @@
+/**
+	自定义函数类型，可以作为其他函数的入参，也包括各种加密方法的实例包括sha,md5
+ */
 package practice
+
 
 import (
 	"crypto/md5"
@@ -10,7 +14,7 @@ import (
 //自定义的函数类型，函数值可以作为其他函数的参数
 type Encipher func(input string) []byte
 
-func main() {
+func UseType() {
 	var input string
 	input = "areyouok"
 	var out string
@@ -71,9 +75,10 @@ func md5Encrypt(input string) []byte {
 该函数实际上为一个函数类型,
 该函数不能直接返回值，调用时参考本例中的main()方法
 其实相当于闭包，可以动态地调用加密方法
+该函数的返回值是一个函数，所以需要针对其返回值再次调用才能得到结果
  */
 func GenEncryptionFunc(encrypt Encipher) func(string) string {
 	return func(input string) string {
-		return fmt.Sprintf("%x", encrypt(input))
+		return fmt.Sprintf("%x", encrypt(input))  //将[]byte转换为string
 	}
 }

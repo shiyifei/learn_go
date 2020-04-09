@@ -14,5 +14,11 @@ func InitRouter() *gin.Engine {
 	router.PUT("/editUser", EditUser)
 	router.DELETE("/delUser", DelUser)
 	router.POST("/delUser", DelUser)
+
+	router.POST("/user/login", UserLogin)
+	router.POST("/user/check", CheckToken)
+
+	//defer common.TryRecover()
+
 	return router
 }

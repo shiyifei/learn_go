@@ -32,7 +32,7 @@ type Message struct {
 	Name string
 }
 
-func main() {
+func UseJson() {
 	var obj = ajaxReturn("ok", "")
 	fmt.Printf("obj.code=%s,obj.msg=%s \n", obj["code"], obj["msg"])
 	jsonToStruct()

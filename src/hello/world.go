@@ -1,13 +1,32 @@
 package main
 
 import (
+	"bytes"
+	"crypto"
+	"encoding/hex"
 	"fmt"
 	"gopkg.in/gomail.v2"
 	"hello/other"
 	"strconv"
 )
 
+
+func sha1Encrypt(input string) string {
+	buf := bytes.NewBufferString(input)
+	h := crypto.SHA1.New()
+	h.Write([]byte(buf.String()))
+	output := hex.EncodeToString(h.Sum(nil))
+	fmt.Printf("%s\n", output)
+	return output
+}
+
 func main() {
+
+	input := "user100000"
+	output := sha1Encrypt(input)
+	fmt.Println(input, output)
+	return
+
 	fmt.Println("Hello, shiyifei, what are you doing now ?")
 
 	var a, b int

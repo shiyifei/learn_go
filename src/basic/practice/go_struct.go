@@ -7,7 +7,7 @@ type Student struct {
 	age int
 }
 
-func main() {
+func Go_struct() {
 	var student1 Student
 	var student2 Student
 

@@ -1,10 +1,13 @@
+/**
+	关于回调函数的相关实例
+ */
 package practice
 
 import "fmt"
 
 type cb func(int) int
 
-func Go_callback() {
+func Go_Callback() {
 	testCallBack(2,callBack)
 	testCallBack(3,mul)
 	testCallBack(4,func(a int) int {

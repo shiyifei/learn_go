@@ -40,7 +40,7 @@ func(this State) String() string {
     }
 }
 
-func main() {
+func UseEnum() {
     state := Disabled
     fmt.Println("state", state)
 

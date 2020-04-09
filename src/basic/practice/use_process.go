@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func main() {
+func UseProcess() {
 	if len(os.Args) < 2 {
 		fmt.Printf("Usage: %s [command] \n", os.Args[0])
 		os.Exit(0)

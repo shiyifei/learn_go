@@ -8,7 +8,7 @@ type Book struct{
 }
 
 
-func main() {
+func Go_slice() {
 	numbers := []int{1,2,4,5,6,7}
 
 	printArr(numbers)

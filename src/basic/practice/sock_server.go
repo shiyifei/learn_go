@@ -11,13 +11,13 @@ import (
 	"time"
 )
 
-const (
+/*const (
 	SERVER_NETWORK = "tcp"
 	SERVER_ADDRESS = "192.168.56.102:8085"
 	DELIMITER = '\t'
 	logSn = 666
-)
-func main() {
+)*/
+func Sock_server() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go doWork(wg)
@@ -54,7 +54,7 @@ func handleConn(conn net.Conn) {
 	for {
 		conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 		//read message from socket
-		strReq, err := read(conn)
+		strReq, err := readMessage(conn)
 		if err != nil {
 			if err == io.EOF {
 				printLog("The connection is closed by another side.(Server) \n")
@@ -68,7 +68,7 @@ func handleConn(conn net.Conn) {
 		//processing received message sent by client
 		i32Req, err := strconv.Atoi(strReq)
 		if err != nil {
-			n, err := write(conn, err.Error())
+			n, err := writeMessage(conn, err.Error())
 			if err != nil {
 				printLog("Write Error (written %d bytes):%s (Server) \n", err)
 			}
@@ -78,7 +78,7 @@ func handleConn(conn net.Conn) {
 		//send message to client
 		f64Resp := math.Cbrt(float64(i32Req))
 		respMsg := fmt.Sprintf("The cube root of %d is %f.", i32Req, f64Resp)
-		n, err := write(conn, respMsg)
+		n, err := writeMessage(conn, respMsg)
 		if err != nil {
 			printLog("Write Error:%s (Server) \n", err)
 		}
@@ -89,7 +89,7 @@ func handleConn(conn net.Conn) {
 /**
 	读操作
  */
-func read(conn net.Conn) (string, error) {
+func readMessage(conn net.Conn) (string, error) {
 	readBytes := make([]byte, 1)
 	var buffer bytes.Buffer
 	for {
@@ -109,7 +109,7 @@ func read(conn net.Conn) (string, error) {
 /**
 	写操作
  */
-func write(conn net.Conn, content string) (int, error) {
+func writeMessage(conn net.Conn, content string) (int, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(content)
 	buffer.WriteByte(DELIMITER)
@@ -119,6 +119,6 @@ func write(conn net.Conn, content string) (int, error) {
 /**
 	写日志方法
  */
-func printLog(format string, args...interface{}) {
+/*func printLog(format string, args...interface{}) {
 	fmt.Printf("%d:%s", logSn, fmt.Sprintf(format, args...))
-}
+}*/
