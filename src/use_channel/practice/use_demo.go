@@ -30,4 +30,6 @@ func TestCopy(){
 
 	personCopy := <-personChan
 	fmt.Printf("person_copy:%v \n", personCopy)
+
+	close(personChan)  //使用完之后关闭通道
 }
