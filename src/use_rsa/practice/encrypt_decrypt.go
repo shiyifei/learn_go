@@ -37,6 +37,7 @@ TjcVcvWbTxGw0wOm6wIDAQAB
 -----END PUBLIC KEY-----`)
 
 
+
 func RSAEncrypt(originData []byte) []byte {
 	block, ok := pem.Decode(publicKey)
 	fmt.Println("ok:", ok)
@@ -107,7 +108,6 @@ func GenRsaKey(bits int) (publicKeyStr, privateKeyStr string, err error) {
 func Test() {
 	//生成公钥私钥
 	GenRsaKey(512)
-
 
 	//加密
 	cipher := RSAEncrypt([]byte("hello, shiyifei"))

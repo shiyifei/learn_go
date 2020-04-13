@@ -2,10 +2,50 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"use_interface/practice"
 )
 
+func returnInterface() interface{} {
+	return "are you ok, shiyifei?"
+}
+
+type Student struct {
+	name string
+	class string
+}
+
 func main() {
+	practice.TestConvert()
+
+	var varA interface{}
+	varA = "are you ok?"
+	fmt.Println(reflect.TypeOf(varA), "==========111=======")
+	fmt.Println(varA,  "==========111=======")
+
+	result, ret := varA.(string)
+	fmt.Println(reflect.TypeOf(result), "==========112=======")
+	fmt.Println(result, ret, "==========112=======")
+
+	//var valB practice.MyString
+	valRet := returnInterface()
+	fmt.Println(reflect.TypeOf(valRet), "==========221=======")
+	fmt.Println(valRet, ret, "==========221=======")
+
+	valB, ret := valRet.(string)
+	fmt.Println(reflect.TypeOf(valB), "==========222=======")
+	fmt.Println(valB, ret, "==========222=======")
+
+	valRet = returnInterface()
+	valC, ret := valRet.(practice.MyString)
+	fmt.Println(reflect.TypeOf(valC), "==========333=======")
+	fmt.Println(valC, ret, "==========333=======")
+
+	valRet = returnInterface()
+	valD, ret := valRet.(*Student)
+	fmt.Println(reflect.TypeOf(valD), "==========444=======")
+	fmt.Println(valD, ret, "==========444=======")
+
 	//实例1
 	var input practice.MyString
 	input = practice.MyString("shiyf, what are you doing now?")

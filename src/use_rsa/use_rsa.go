@@ -7,4 +7,8 @@ import (
 
 func main() {
 	practice.Test()
+
+	practice.Openssl_test()
+
+	//practice.MyTest()
 }
