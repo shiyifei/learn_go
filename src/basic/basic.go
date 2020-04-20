@@ -14,18 +14,21 @@ func CustomerRecover1() {
 	}()
 }
 
-
 func CustomerRecover2() {
-		r := recover()
-		if r != nil {
-			fmt.Println("in CustomerRecover2(), err:", r)
-		}
+	r := recover()
+	if r != nil {
+		fmt.Println("in CustomerRecover2(), err:", r)
+	}
 }
 
-
-
 func main() {
-	practice.Go_basic()
+	practice.UseEnv()
+	fmt.Println("================")
+	practice.UseTime()
+
+	fmt.Println("================")
+	return
+	/*practice.Go_basic()
 	practice.UseType()
 
 	fmt.Println("panic and recover=========================")
@@ -36,7 +39,7 @@ func main() {
 	CustomerRecover1()
 
 	//这种写法能起作用，defer语句中直接捕获到抛出的异常
-	defer CustomerRecover2()
+	defer CustomerRecover2()*/
 
 	//这种写法能捕获到NumDiv方法中抛出的异常
 	/*defer func() {
@@ -45,5 +48,5 @@ func main() {
 			fmt.Println("in defer func(), err:", r)
 		}
 	}()*/
-	practice.NumDiv(3,0)
+	// practice.NumDiv(3, 0)
 }
