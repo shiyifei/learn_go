@@ -1,6 +1,6 @@
 /**
-	map是引用类型，重新赋值后修改其中元素的值会影响之前的变量的值。
- */
+map是引用类型，重新赋值后修改其中元素的值会影响之前的变量的值。
+*/
 package practice
 
 import "fmt"
@@ -21,7 +21,7 @@ func UseMap() {
 
 	emp = "tom"
 	fmt.Printf("salary of %s is:%d\n", emp, empSalary[emp]) //直接取值会获取到默认值，int类型默认值为0，如果正好有值为0的，就区分不出到底本来值就是0还是根本不存在该元素
-	salary, ok := empSalary[emp]	//判断元素是否存在，然后再取值，这样取出的值才是正确的。
+	salary, ok := empSalary[emp]                            //判断元素是否存在，然后再取值，这样取出的值才是正确的。
 	if ok == true {
 		fmt.Printf("salary of %s is:%d\n", emp, salary)
 	} else {
@@ -37,10 +37,10 @@ func UseMap() {
 		fmt.Printf("empSalary[%s]:%d \n", key, value)
 	}
 
-	newSalary := map[string]int {
-		"john":12000,
-		"steve":15000,
-		"herry":18000,
+	newSalary := map[string]int{
+		"john":  12000,
+		"steve": 15000,
+		"herry": 18000,
 	}
 
 	isEqual := compareMap(empSalary, newSalary)
@@ -53,21 +53,21 @@ func UseMap() {
 }
 
 /**
-	由于map是引用类型，函数中的参数如果传入map类型值，在函数内修改元素值的话，在函数外也会生效。
- */
+由于map是引用类型，函数中的参数如果传入map类型值，在函数内修改元素值的话，在函数外也会生效。
+*/
 func changeMap(input map[string]int) {
 	input["steve"] = 19000
 	input["brown"] = 22000
 }
 
 /**
-	比较两个map变量的值是否相等的方法
- */
- func compareMap(map1,map2 map[string]int) bool{
- 	for key,value := range map1 {
- 		if map2[key] != value {
- 			return false
+比较两个map变量的值是否相等的方法
+*/
+func compareMap(map1, map2 map[string]int) bool {
+	for key, value := range map1 {
+		if map2[key] != value {
+			return false
 		}
 	}
- 	return true
- }
+	return true
+}
