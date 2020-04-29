@@ -46,6 +46,13 @@ func InitRouter() *gin.Engine {
 		v2.POST("/user/check", CheckToken)
 	}
 
+	v3 := router.Group("/cookie")
+	{
+		v3.GET("/write", WriteCookie)
+		v3.GET("/read", ReadCookie)
+		v3.GET("/clear", ClearCookie)
+	}
+
 	//defer common.TryRecover()
 
 	return router

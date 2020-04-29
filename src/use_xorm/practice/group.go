@@ -2,34 +2,16 @@ package practice
 
 import (
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
+	"use_xorm/service"
 )
 
-var eg * xorm.EngineGroup
+func GetUserList() {
 
-func Test() {
-	var err error
-	master, err := xorm.NewEngine("mysql", "manager:SYF!123mysql@tcp(192.168.56.102:3306)/test?charset=utf8")
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	//fmt.Println("master ping()", master.Ping())
-	slaver, err := xorm.NewEngine("mysql", "manager:SYF!123mysql@tcp(192.168.56.102:3307)/test?charset=utf8")
+	 service := &service.UserService{}
+	 params := map[string]interface{}{"id":20000, "limit":3}
+	 ret := service.GetUserList1(params)
+	 fmt.Printf("%+v \n", ret)
 
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	//fmt.Println("slaver ping()", slaver.Ping())
-
-	slaves := []*xorm.Engine{slaver}
-	eg, err = xorm.NewEngineGroup(master, slaves)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	eg.Ping()
-
+	 result := service.GetUserList2(params)
+	fmt.Printf("%+v\n", result)
 }
