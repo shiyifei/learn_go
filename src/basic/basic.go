@@ -22,6 +22,9 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.GetSubMenu()
+	fmt.Println("================")
+
 	practice.UseEnv()
 	fmt.Println("================")
 	practice.UseTime()
