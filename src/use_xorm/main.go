@@ -19,6 +19,7 @@ func main() {
 	//fmt.Println(result)
 	fmt.Println("are you ok?")*/
 	practice.GetUserList()
+	practice.GetUserInfo()
 	practice.Method1()
-
+	practice.TestFind()
 }
