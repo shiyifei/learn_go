@@ -15,6 +15,8 @@ func main() {
 	dbAccess.ExecTrans()
     **/
 
+    UseMysql.Table2Struct()
+
 
     //测试数据库连接池
 	//UseMysql.SelectMultiUser(1)

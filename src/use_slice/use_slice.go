@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
+	UseSlice.TestSlice()
+	fmt.Println("====================")
+	return
 
 	UseSlice.BasicOperate()
 	fmt.Println("====end basic operation======================================================================================")
