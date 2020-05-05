@@ -6,8 +6,10 @@ import (
 )
 
 func main() {
-	practice.SendRequest()
+	practice.GetLocalIp()
 	fmt.Println("1111111==================")
+	practice.SendRequest()
+	fmt.Println("1111122==================")
 	practice.HttpDo()
 	fmt.Println("222222==================")
 	practice.HttpPost()

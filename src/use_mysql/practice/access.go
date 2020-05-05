@@ -5,13 +5,21 @@ import(
 	_ "github.com/go-sql-driver/mysql"
     "time"
 	"fmt"
+	"net"
+	"strings"
 )
 
 var SqlDB *sql.DB
 
 func init() {
+	fmt.Println("in access.go, init()")
 	var err error
-	SqlDB, err = sql.Open("mysql", "manager:SYF!123mysql@tcp(192.168.56.102:3306)/test")
+	localIp := GetLocalIp()
+	if localIp == "192.168.56.107" {
+		localIp = "192.168.56.102"
+	}
+
+	SqlDB, err = sql.Open("mysql", fmt.Sprintf("root:SYF!123mysql@tcp(%s:3306)/test", localIp))
 	checkErr(err)
 	err = SqlDB.Ping()
 	checkErr(err)
@@ -20,6 +28,20 @@ func init() {
     SqlDB.SetMaxIdleConns(2)
 
     //SqlDB.SetConnMaxLifetime(time.Second*10)
+}
+
+func GetLocalIp() string {
+	conn, err := net.Dial("udp", "www.baidu.com:80")
+	if err != nil {
+		fmt.Println(err.Error())
+		return ""
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().String()
+
+	localIp := strings.Split(localAddr, ":")[0]
+	fmt.Println("localAddr:", localAddr, "localIP:",localIp)
+	return localIp
 }
 
 
