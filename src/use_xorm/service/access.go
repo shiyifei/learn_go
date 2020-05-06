@@ -91,6 +91,7 @@ func (p *UserService) TestFind(params map[string]interface{}) map[int64]Users {
 	userArr := make(map[int64]Users)
 	// userArr := make([]Users, 0)
 	var fields = []string{"id", "username", "email"}
+	userArr[123] = Users{Id: 123, Username: "shiyifei", Email: "areyouok@163.com"}
 	err := dao.DB.Table("users").Where("id>?", params["id"]).Cols(fields...).Limit(params["limit"].(int)).Find(&userArr)
 	if err != nil {
 		fmt.Println("in access.go, err:", err)
