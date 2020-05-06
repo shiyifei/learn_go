@@ -99,3 +99,38 @@ func (p *UserService) TestFind(params map[string]interface{}) map[int64]Users {
 	fmt.Printf("in access.go, %+v \n", userArr)
 	return userArr
 }
+
+/**
+ *测试rows方法,注意rows方法的传参数部分
+ */
+func (p *UserService) TestRows(params map[string]interface{}) map[int]Users {
+	userArr := make(map[int]Users)
+
+	/*type User struct {
+		Id       int
+		Username string
+		Email    string
+	}*/
+	user := new(Users)
+	var fields = []string{"id", "username", "email"}
+	rows, err := dao.DB.Table("users").Where("id>?", params["id"]).Cols(fields...).Limit(params["limit"].(int)).Rows(user)
+	if err != nil {
+		fmt.Println("in TestRows(), err:", err)
+		return userArr
+	}
+	defer rows.Close()
+	fmt.Printf("in TestRows(), %+v \n", rows)
+	fmt.Printf("in TestRows(), %+v \n", user)
+
+	for rows.Next() {
+		err = rows.Scan(user)
+		fmt.Printf("in TestRows(), %+v \n", user)
+		userArr[user.Id] = *user //指针的值拷贝，此变量地址与原变量地址已经不同
+
+		// currUser := new(Users)
+		// currUser = *user
+		// userArr[user.Id] = currUser
+		// userArr[user.Id] = Users{Id: user.Id, Username: user.Username, Email: user.Email}
+	}
+	return userArr
+}

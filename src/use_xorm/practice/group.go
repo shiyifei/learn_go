@@ -29,3 +29,10 @@ func TestFind() {
 	ret := service.TestFind(params)
 	fmt.Printf("%+v \n", ret)
 }
+
+func TestRows() {
+	service := &service.UserService{}
+	params := map[string]interface{}{"id": 20000, "limit": 5}
+	ret := service.TestRows(params)
+	fmt.Printf("in TestRows(), ret:%+v \n", ret)
+}

@@ -6,19 +6,45 @@ import (
 	"github.com/gin-gonic/gin"
 	redis "github.com/go-redis/redis/v7"
 	"net/http"
+	"reflect"
 	"strconv"
 	"use_gin/app/common"
 	"use_gin/app/models"
 	"use_gin/app/services"
 )
 
+/**
+ * 测试读写redis以及incr方法
+ * @param {[type]} c *gin.Context [description]
+ */
 func IndexApi(c *gin.Context) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "192.168.56.102:6379",
 		Password: "",
 		DB:       0,
 	})
+	err := client.Incr("name").Err()
+	fmt.Println("incr name, err:", err)
+
 	name, _ := client.Get("name").Result()
+	typeName := reflect.TypeOf(name).Name()
+	fmt.Printf("type of name:%s value:%s \n", typeName, name)
+
+	err = client.Incr("count").Err()
+	fmt.Println("incr count, err:", err)
+	count, _ := client.Get("count").Result()
+	countType := reflect.TypeOf(count).Name()
+	fmt.Printf("type of count:%s value=%s\n", countType, count)
+
+	what, err := client.Get("areyouok").Result()
+	fmt.Println("err:", err, "type of what:", reflect.TypeOf(what).Name(), "what:", what)
+	if err == redis.Nil {
+		what = ""
+	} else if err != nil {
+		fmt.Println("err:", err, "what:", what)
+	}
+	fmt.Println("what:", what)
+
 	c.String(http.StatusOK, name+"It works")
 }
 

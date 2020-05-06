@@ -1,5 +1,6 @@
 /**
 map是引用类型，重新赋值后修改其中元素的值会影响之前的变量的值。
+本代码演示了map的基本用户以及嵌套用法
 */
 package practice
 
@@ -48,6 +49,34 @@ func UseMap() {
 		fmt.Println("empSalary is Equal newSalary")
 	} else {
 		fmt.Println("empSalary is not equal newSalary")
+	}
+
+	fmt.Println("===============演示map的嵌套写法======================")
+
+	var mapA map[string]map[string]bool
+
+	mapA = make(map[string]map[string]bool)
+	mapA["controllerA"] = make(map[string]bool)
+	mapA["controllerB"] = make(map[string]bool)
+	mapA["controllerC"] = make(map[string]bool)
+	mapA["controllerA"]["actionA"] = true
+	mapA["controllerB"]["actionB"] = false
+	mapA["controllerC"]["actionA"] = true
+
+	valueA, ok := mapA["controllerD"] //未赋值时,该值等于nil
+	fmt.Println("before make() valueA:", valueA, "ok:", ok, "valueA is nil:", valueA == nil)
+	if valueA == nil {
+		mapA["controllerD"] = make(map[string]bool)
+		valueA, ok = mapA["controllerD"]
+	}
+	fmt.Println("after make(), valueA:", valueA, "ok:", ok, "valueA is nil:", valueA == nil)
+
+	value, ok := mapA["controllerB"]["actionA"]
+	fmt.Println("value:", value, "ok:", ok)
+	if ok && value {
+		fmt.Println("this action is exists")
+	} else {
+		fmt.Println("this action is not exists")
 	}
 
 }

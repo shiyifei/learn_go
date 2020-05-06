@@ -22,4 +22,5 @@ func main() {
 	practice.GetUserInfo()
 	practice.Method1()
 	practice.TestFind()
+	practice.TestRows()
 }

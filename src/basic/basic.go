@@ -22,6 +22,8 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.UseMap()
+	return
 	practice.GetSubMenu()
 	fmt.Println("================")
 
