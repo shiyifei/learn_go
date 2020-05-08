@@ -14,14 +14,26 @@ func Test() {
 	a("are you ok?")
 	fmt.Printf("type of a is:%T \n", a)
 
-
 	func(input string) {
 		fmt.Printf("hello, you input string:[%s] \n", input)
 	}("I am fine, thank you!")
 
-	var methodAdd add = func(a,b int) int {
-		return a+b
+	var methodAdd add = func(a, b int) int {
+		return a + b
 	}
-	fmt.Println("sum of 10 and 23 is:", methodAdd(10,23))
+	fmt.Println("sum of 10 and 23 is:", methodAdd(10, 23))
 
+}
+
+/**
+ * 演示可变参数的函数的写法
+ */
+func TestVariables(nums ...int) int {
+	result := 0
+	if len(nums) > 0 {
+		for _, v := range nums {
+			result += v
+		}
+	}
+	return result
 }

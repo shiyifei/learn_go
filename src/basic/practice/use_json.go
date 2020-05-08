@@ -9,26 +9,26 @@ import (
 )
 
 type Order struct {
-	Name string `json:name`
-	OrderItem []Item `json:item`
+	Name        string   `json:name`
+	OrderItem   []Item   `json:item`
 	OrderRefund []Refund `json:refund`
 }
 
 type Item struct {
 	Name string `json:name`
-	Oid int `json:oid`
+	Oid  int    `json:oid`
 }
 
 type Refund struct {
-	Name string `json:name`
-	Item int 	`json:item`
+	Name    string `json:name`
+	Item    int    `json:item`
 	Content string `json:content`
-	Imgs string 	`json:imgs`
-	Status string `json:status`
+	Imgs    string `json:imgs`
+	Status  string `json:status`
 }
 
 type Message struct {
-	Id int
+	Id   int
 	Name string
 }
 
@@ -39,10 +39,10 @@ func UseJson() {
 	structToJson()
 }
 
-func ajaxReturn(code ,msg string ) map[string]string {
-	return map[string]string {
-		"code":code,
-		"msg":msg,
+func ajaxReturn(code, msg string) map[string]string {
+	return map[string]string{
+		"code": code,
+		"msg":  msg,
 	}
 }
 
@@ -70,19 +70,36 @@ func jsonToStruct() {
 }
 
 /**
-	结构体转json
- */
+结构体转json
+*/
 func structToJson() {
 	var m Order
 	m.Name = "order10010"
-	m.OrderItem = append(m.OrderItem, Item{Name:"shanghai_house", Oid:1})
-	m.OrderItem = append(m.OrderItem, Item{Name:"beijing_car", Oid:2})
-	for i:=1;i<6;i++ {
+	m.OrderItem = append(m.OrderItem, Item{Name: "shanghai_house", Oid: 1})
+	m.OrderItem = append(m.OrderItem, Item{Name: "beijing_car", Oid: 2})
+	for i := 1; i < 6; i++ {
 		str := []byte("Things")
 		str = strconv.AppendInt(str, int64(i), 10)
-		orderi := Item{Name:string(str), Oid:i}
+		orderi := Item{Name: string(str), Oid: i}
 		m.OrderItem = append(m.OrderItem, orderi)
 	}
-	bytes,_ := json.Marshal(m)
+	bytes, _ := json.Marshal(m)
 	fmt.Printf("json.m,%s \n", bytes)
+}
+
+func json_encode(data interface{}) (string, error) {
+	bytes, err := json.Marshal(m)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
+}
+
+func json_decode(json string) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+	err := json.Unmarsha1(json, result)
+	if err != nil {
+		return nil, error
+	}
+	return result, nil
 }

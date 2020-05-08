@@ -22,6 +22,11 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.UseJson()
+	return
+	fmt.Println("================")
+	practice.TestGuid()
+	fmt.Println("================")
 	practice.UseMap()
 	return
 	practice.GetSubMenu()

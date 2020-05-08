@@ -1,6 +1,8 @@
 package app
 
 import (
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	. "use_gin/app/apis"
 
