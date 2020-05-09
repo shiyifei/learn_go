@@ -1,7 +1,7 @@
 /**
-	本示例演示painc和recover方法的用法，当两者在同一个作用域时才能起作用
-	即：defer func()部分要跟抛出异常的方法在同一个作用域下recover才能起作用
- */
+本示例演示painc和recover方法的用法，当两者在同一个作用域时才能起作用
+即：defer func()部分要跟抛出异常的方法在同一个作用域下recover才能起作用
+*/
 package practice
 
 import (
@@ -9,12 +9,12 @@ import (
 	"fmt"
 )
 
-func NumDiv(a,b int) int {
+func NumDiv(a, b int) int {
 	if b == 0 {
 		panic(errors.New("被除数不能为0"))
 		return 0
 	}
-	return a/b
+	return a / b
 }
 
 func MyRecover() {
@@ -37,4 +37,3 @@ func g(i int) {
 	fmt.Println("Printing in g", i)
 	g(i + 1)
 }
-

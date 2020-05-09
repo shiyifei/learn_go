@@ -22,6 +22,8 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Go_struct()
+	fmt.Println("================")
 	practice.UseJson()
 	return
 	fmt.Println("================")

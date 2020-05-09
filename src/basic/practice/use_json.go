@@ -88,18 +88,19 @@ func structToJson() {
 }
 
 func json_encode(data interface{}) (string, error) {
-	bytes, err := json.Marshal(m)
+	bytes, err := json.Marshal(data)
 	if err != nil {
 		return "", err
 	}
 	return string(bytes), nil
 }
 
-func json_decode(json string) (map[string]interface{}, error) {
+/*func json_decode(json string) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
-	err := json.Unmarsha1(json, result)
+	err := json.Unmarshal(json)
 	if err != nil {
 		return nil, error
 	}
 	return result, nil
 }
+*/

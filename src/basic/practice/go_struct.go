@@ -1,13 +1,19 @@
 package practice
+
 import "fmt"
 
 type Student struct {
-	name string
+	name   string
 	gender string
-	age int
+	age    int
 }
 
+var firstStudent Student
+
 func Go_struct() {
+
+	firstStudent.name = "areyouok"
+
 	var student1 Student
 	var student2 Student
 
@@ -33,11 +39,11 @@ func Go_struct() {
 }
 
 func PrintStudent(std Student) {
-	fmt.Println("name=",std.name)
+	fmt.Println("name=", std.name)
 	fmt.Println("gender=", std.gender)
-	fmt.Printf("age=%d\n",std.age)
+	fmt.Printf("age=%d\n", std.age)
 }
 
-func printInfo(std *Student){
-	fmt.Printf("name=%s,gender=%s,age=%d\n", std.name,std.gender,std.age)
+func printInfo(std *Student) {
+	fmt.Printf("name=%s,gender=%s,age=%d\n", std.name, std.gender, std.age)
 }
