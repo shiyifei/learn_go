@@ -34,7 +34,7 @@ func incCounter(id int, wg *sync.WaitGroup) {
 		value := counter
 
 		fmt.Println("current routine id:",id,",count=",count,",value=",value)
-		//当前goroutine从线程退出,并放回到队列,让其他goroutine运行
+		//Gosched让出处理器，当前goroutine从线程退出,并放回到队列,让其他goroutine运行
 		runtime.Gosched()
 
 		value++

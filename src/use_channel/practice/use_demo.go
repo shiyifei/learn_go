@@ -22,14 +22,14 @@ func TestCopy(){
 	var personChan = make(chan Person, 1)
 
 	person := Person{"wangzhongwei", 35, Addr{"Beijing", "haidian"}}
-	fmt.Printf("person(1):%v \n", person)
+	fmt.Printf("person(1):%+v \n", person)
 	personChan <- person
 
 	person.Address.district = "shijingshan"
-	fmt.Printf("person(2):%v \n", person)
+	fmt.Printf("person(2):%+v \n", person)
 
 	personCopy := <-personChan
-	fmt.Printf("person_copy:%v \n", personCopy)
+	fmt.Printf("person_copy:%+v \n", personCopy)
 
 	close(personChan)  //使用完之后关闭通道
 }

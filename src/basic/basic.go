@@ -22,15 +22,16 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Use_runtime()
+	fmt.Println("======end use_runtime========")
+	return
 	practice.Go_struct()
 	fmt.Println("================")
 	practice.UseJson()
-	return
 	fmt.Println("================")
 	practice.TestGuid()
 	fmt.Println("================")
 	practice.UseMap()
-	return
 	practice.GetSubMenu()
 	fmt.Println("================")
 
