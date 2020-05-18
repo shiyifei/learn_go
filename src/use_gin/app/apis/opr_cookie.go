@@ -15,7 +15,7 @@ func ReadCookie(c *gin.Context) {
 }
 
 func WriteCookie(c *gin.Context) {
-	c.SetCookie("name", "shiyifei", 10, "/", "192.168.56.107", false, true)
+	c.SetCookie("name", "shiyifei", 10, "/", "", false, true)
 }
 
 func ClearCookie(c *gin.Context) {

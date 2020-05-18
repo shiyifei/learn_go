@@ -22,6 +22,10 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Use_defer()
+	fmt.Println("======end Use_defer========")
+	practice.Use_assign()
+	fmt.Println("======end Use_assign========")
 	practice.Use_runtime()
 	fmt.Println("======end use_runtime========")
 	return
