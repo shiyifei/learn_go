@@ -22,9 +22,6 @@ func CustomerRecover2() {
 }
 
 func main() {
-	practice.Go_slice()
-	fmt.Println("======end go_slice========")
-	return
 	practice.Go_Pointer()
 	fmt.Println("======end go_pointer========")
 	practice.Go_Pptr()

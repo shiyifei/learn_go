@@ -5,5 +5,5 @@ import "sync"
 var syncMap sync.Map
 
 func UseSyncMap() {
-	syncMap.Load("order:1")
+	ret := syncMap.Load("order:1")
 }
