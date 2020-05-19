@@ -149,6 +149,13 @@ func BasicOperate() {
 	fmt.Println("after copying and modifing books[0], arrBook:")
 	printBookArr(arrBook)
 
+	sort.Slice(arrBook, func(i,j int) bool {return arrBook[i].name < arrBook[j].name})
+	fmt.Println("after sort by book name, arrBook:")
+	printBookArr(arrBook)
+
+	sort.Slice(arrBook, func(i,j int) bool {return arrBook[i].price > arrBook[j].price})
+	fmt.Println("after sort by book price desc, arrBook:")
+	printBookArr(arrBook)
 }
 
 func printArr(arr []int) {
