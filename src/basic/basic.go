@@ -22,6 +22,15 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Go_slice()
+	fmt.Println("======end go_slice========")
+	return
+	practice.Go_Pointer()
+	fmt.Println("======end go_pointer========")
+	practice.Go_Pptr()
+	fmt.Println("======end go_pptr========")
+	practice.Go_ptrArr()
+	fmt.Println("======end go_ptrArr========")
 	practice.Use_defer()
 	fmt.Println("======end Use_defer========")
 	practice.Use_assign()

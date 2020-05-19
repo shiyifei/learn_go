@@ -18,6 +18,8 @@ type Role struct {
 	Parentid int
 }
 
+//有一个上下级关系的数组
+//要求根据某一个roleid找到其所有子节点，要求多级子节点都要查询出来
 func TestSlice() {
 	var roles map[int]Role
 	roles = make(map[int]Role)
@@ -130,12 +132,22 @@ func BasicOperate() {
 
 	fmt.Printf("type of arrBook:%T \n", arrBook)
 
+	bookArr := arrBook
+	bookArr[0].author = "shi_yi_fei"
+	fmt.Println("after assign and modifing books[0], arrBook:")
+	printBookArr(arrBook)
+
 	//对象切片
 	var books = make([]Book, len(arrBook), 2*cap(arrBook))
-	copy(books, arrBook) //copy方法中的第一个参数是目标数据，第二个参数是源数据
+	copy(books, arrBook)  //copy方法中的第一个参数是目标数据，第二个参数是源数据
 
+	//copy之后修改值，不会影响前置
+	books[0].author = "shiyifei"
+	fmt.Println("after copying and modifing books[0], books:")
 	printBookArr(books)
-	printBookArr1(books)
+
+	fmt.Println("after copying and modifing books[0], arrBook:")
+	printBookArr(arrBook)
 
 }
 

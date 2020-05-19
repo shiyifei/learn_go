@@ -14,7 +14,7 @@ func Go_ptrArr() {
 	}
 
 	for i=0;i<MAX;i++ {
-		fmt.Printf("ptr[%d] is:%d\n",i,*ptr[i])
+		fmt.Printf("ptr[%d] is:%d, addr:[%x]\n",i,*ptr[i], ptr[i])
 	}
 
 }

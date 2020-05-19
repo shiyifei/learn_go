@@ -16,6 +16,11 @@ type Student struct {
 }
 
 func main() {
+	practice.ProcessNil()
+	fmt.Println("===========end process nil=======================")
+	return
+
+
 	practice.TestConvert()
 
 	var varA interface{}
