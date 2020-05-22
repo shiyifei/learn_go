@@ -1,5 +1,9 @@
 package practice
 
+/**
+	定义一个任务的生产者,用于生产任务消息
+ */
+
 import (
 	"fmt"
 	"log"
@@ -7,7 +11,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//定义一个任务的生产者,用于生产任务消息
+
 func bodyFrom(args []string) string {
 	var s string
 	if len(args) <= 0 {
@@ -18,6 +22,7 @@ func bodyFrom(args []string) string {
 	return s
 }
 
+//生成任务消息
 func GenerateTask(args []string) {
 	fmt.Println("arrive in GenerateTask()")
 	conn, err := RabbitMQConn()

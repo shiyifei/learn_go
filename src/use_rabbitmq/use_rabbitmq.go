@@ -1,15 +1,23 @@
 package main
 
-import "use_rabbitmq/practice"
+import (
+	"time"
+	"use_rabbitmq/practice"
+)
 
 func main() {
-	//practice.Produce()
+	//chanRet := make(chan bool)
+	//chanRet <-
 	//
-	//practice.Consume()
+	practice.Produce()
+	//
+	//result := <-chanRet
+	time.Sleep(300* time.Millisecond)
+	practice.Consume()
 
-	practice.GenerateTask([]string{"aaa","bbb","ccc", "ddd"})
-
-	practice.ProcessTask()
-	practice.ProcessTask()
+	//practice.GenerateTask([]string{"aaa","bbb","ccc", "ddd"})
+	//
+	//practice.ProcessTask()
+	//practice.ProcessTask()
 
 }
