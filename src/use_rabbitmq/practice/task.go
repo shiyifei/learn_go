@@ -26,12 +26,12 @@ func bodyFrom(args []string) string {
 func GenerateTask(args []string) {
 	fmt.Println("arrive in GenerateTask()")
 	conn, err := RabbitMQConn()
-	ErrorHandling(err, "Failed to connect to RabbitMQ")
+	FailOnError(err, "Failed to connect to RabbitMQ")
 
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	ErrorHandling(err ,"failed to open a channel")
+	FailOnError(err ,"failed to open a channel")
 
 	defer ch.Close()
 
@@ -43,7 +43,7 @@ func GenerateTask(args []string) {
 		false,
 		nil,
 	)
-	ErrorHandling(err, "Failed to declare a queue")
+	FailOnError(err, "Failed to declare a queue")
 
 	body := bodyFrom(args)
 	err = ch.Publish(
@@ -56,7 +56,7 @@ func GenerateTask(args []string) {
 			DeliveryMode: amqp.Persistent,
 			Body : []byte(body),
 		})
-	ErrorHandling(err, "Failed to generate a task")
+	FailOnError(err, "Failed to generate a task")
 	log.Printf("sent %s \n", body)
 }
 
