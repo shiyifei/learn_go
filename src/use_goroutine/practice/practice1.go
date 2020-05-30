@@ -25,7 +25,7 @@ func Practice1() {
 		//在函数退出时，调用Done通知main函数工作已经完成，Done()方法会减小WaitGroup的值
 		defer wg.Done()
 
-		//显示字母表三次
+		//显示字母表300次
 		for count:=0; count<300; count++ {
 			for char := 'a'; char <'a'+26; char++ {
 				fmt.Printf("%c ", char)

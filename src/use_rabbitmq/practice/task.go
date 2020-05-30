@@ -1,5 +1,9 @@
 package practice
 
+/**
+	定义一个任务的生产者,用于生产任务消息
+ */
+
 import (
 	"fmt"
 	"log"
@@ -7,7 +11,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//定义一个任务的生产者,用于生产任务消息
+
 func bodyFrom(args []string) string {
 	var s string
 	if len(args) <= 0 {
@@ -18,15 +22,16 @@ func bodyFrom(args []string) string {
 	return s
 }
 
+//生成任务消息
 func GenerateTask(args []string) {
 	fmt.Println("arrive in GenerateTask()")
 	conn, err := RabbitMQConn()
-	ErrorHandling(err, "Failed to connect to RabbitMQ")
+	FailOnError(err, "Failed to connect to RabbitMQ")
 
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	ErrorHandling(err ,"failed to open a channel")
+	FailOnError(err ,"failed to open a channel")
 
 	defer ch.Close()
 
@@ -38,7 +43,7 @@ func GenerateTask(args []string) {
 		false,
 		nil,
 	)
-	ErrorHandling(err, "Failed to declare a queue")
+	FailOnError(err, "Failed to declare a queue")
 
 	body := bodyFrom(args)
 	err = ch.Publish(
@@ -51,7 +56,7 @@ func GenerateTask(args []string) {
 			DeliveryMode: amqp.Persistent,
 			Body : []byte(body),
 		})
-	ErrorHandling(err, "Failed to generate a task")
+	FailOnError(err, "Failed to generate a task")
 	log.Printf("sent %s \n", body)
 }
 
