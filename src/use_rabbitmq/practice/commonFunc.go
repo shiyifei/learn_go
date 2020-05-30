@@ -7,18 +7,28 @@ import(
 )
 
 func RabbitMQConn() (conn *amqp.Connection, err error) {
-	//RabbitMQ分配的用户名称
+	//RabbitMQ分配的用户名
 	var user string = "admin"
+	//RabbitMQ分配的密码
 	var pwd string = "manager"
-	var host string = "192.168.56.102"
-	var port string = "5672"
+
+	//RabbitMQ Broker的ip地址
+	var host string = "192.168.56.110"
+
+	//RabbitMQ Broker监听的端口
+	var port string = "5673"
 
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pwd, host, port)
+
+	//新建一个连接
 	conn, err = amqp.Dial(url)
 	return
 }
 
-func ErrorHandling(err error, msg string) {
+/**
+	输出异常信息
+ */
+func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}

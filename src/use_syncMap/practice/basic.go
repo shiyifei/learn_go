@@ -1,6 +1,11 @@
 package practice
 
 /**
+	如何保证Map在多线程使用情况下的安全性，这是个很重要的问题
+	本示例讲解了线程安全的Map的用法 sync.Map
+ */
+
+/**
 	func (m *Map) Delete(key interface{})
 	func (m *Map) Load(key interface{}) (value interface{}, ok bool)
 	func (m *Map) LoadOrStore(key, value interface{}) (actual interface{}, loaded bool)
@@ -30,6 +35,8 @@ func UseSyncMap() {
 	oldval, loaded = syncMap.LoadOrStore("order:4", 19)
 	fmt.Println("key=order:4,已保存的值:",oldval,"之前是否已经有存值:",loaded)
 
+	//return false 会导致只输出一个元素
+	//return true 才会迭代输出所有的元素
 	syncMap.Range(func(k, v interface{}) bool {
 		fmt.Printf("k:%s,v:%d \n", k.(string), v.(int))
 		return false
