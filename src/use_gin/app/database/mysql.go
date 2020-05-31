@@ -13,7 +13,7 @@ var SqlDB * sql.DB
  */
 func init() {
 	var err error
-	SqlDB, err = sql.Open("mysql", "manager:SYF!123mysql@tcp(192.168.56.102:3306)/test")
+	SqlDB, err = sql.Open("mysql", "root:SYF!123mysql@tcp(192.168.1.102:3306)/test")
 	common.CheckErr(err)
 	err = SqlDB.Ping()
 	common.CheckErr(err)

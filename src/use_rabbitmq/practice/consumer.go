@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
+
+	//"time"
 )
 
 type Source struct {
@@ -31,7 +34,7 @@ func MultiConsume() {
 	// rabbitMQ提供了一种qos（服务质量保证）的功能，
 	// 即非自动确认消息的前提下，如果有一定数目的消息（通过consumer或者Channel设置qos）未被确认，不进行新的消费。
 	err = ch.Qos(
-		100, //设置为N，告诉rabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则consumer将block掉，直到有消息ack
+		1, //设置为N，告诉rabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则consumer将block掉，直到有消息ack
 		0,
 		true)
 
@@ -82,7 +85,15 @@ func MultiConsume() {
 			go func() {
 				for d := range msgs {
 					log.Printf("Received a message %s from queue:[%s] \n", d.Body, q.Name)
+					//time.Sleep(200*time.Millisecond)
+					//先给出应答，再调用接口发送消息，保证不影响后续并发
 					d.Ack(false)
+					var wg1 sync.WaitGroup
+					wg1.Add(1)
+					go callBack(s.exchange, s.queue, s.bindingKey, string(d.Body), &wg1)
+					wg1.Wait()
+					//writeToDB(s.exchange, s.queue, s.bindingKey, string(d.Body))
+					//callBackA(s.exchange, s.queue, s.bindingKey, string(d.Body))
 				}
 			}()
 
@@ -94,6 +105,63 @@ func MultiConsume() {
 
 	<-forever
 }
+
+func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) {
+	defer wg1.Done()
+	_, err := SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+	if err != nil {
+		FailOnError(err, "send post request error one time")
+		writeToDB(exchange, queue, bindingKey, message)
+
+		time.Sleep(200*time.Millisecond)
+		//失败重试一次
+		_, err = SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+		if err != nil {
+			FailOnError(err, "send post request error, two times")
+
+			//处理失败或调用接口失败时，写入数据库
+			writeToDB(exchange, queue, bindingKey, message)
+		}
+	}
+}
+
+func callBackA(exchange, queue, bindingKey, message string) {
+	_, err := SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+	if err != nil {
+		FailOnError(err, "send post request error")
+		time.Sleep(200*time.Millisecond)
+		//失败重试一次
+		_, err = SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+		if err != nil {
+			FailOnError(err, "send post request error")
+
+			//处理失败或调用接口失败时，写入数据库
+			writeToDB(exchange, queue, bindingKey, message)
+		}
+	}
+}
+/**
+CREATE TABLE `failed_message` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `exchange` varchar(30) NOT NULL DEFAULT '' COMMENT 'exchange name',
+  `queue` varchar(30) NOT NULL DEFAULT '' COMMENT 'queue name',
+  `binding_key` varchar(30) NOT NULL DEFAULT '' COMMENT 'binding key',
+  `message` varchar(512) NOT NULL DEFAULT '' COMMENT 'message',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+ */
+
+func writeToDB(exchange,queue,bindingKey,message string) {
+	//fmt.Println("in writeToDB(),111")
+	stmt, err := SqlDB.Prepare("insert into failed_message(exchange,queue,binding_key,message) values(?,?,?,?)")
+	FailOnError(err, "prepare error")
+	res,err := stmt.Exec(exchange, queue, bindingKey, message)
+	FailOnError(err, "insert error")
+	fmt.Println("res,",res)
+}
+
+
 
 func Consume() {
 	fmt.Println("arrive in Consume(),111")

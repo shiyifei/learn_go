@@ -53,6 +53,11 @@ func InitRouter() *gin.Engine {
 		v3.GET("/clear", ClearCookie)
 	}
 
+	v4 := router.Group("/mq")
+	{
+		v4.POST("/consume", ConsumeMsg)
+	}
+
 	//defer common.TryRecover()
 
 	return router

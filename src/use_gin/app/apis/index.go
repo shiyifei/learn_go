@@ -5,13 +5,21 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	redis "github.com/go-redis/redis/v7"
+	"math/rand"
 	"net/http"
 	"reflect"
 	"strconv"
+	"time"
 	"use_gin/app/common"
 	"use_gin/app/models"
 	"use_gin/app/services"
 )
+
+type User struct {
+	Name string `json:"name"`
+	Addr string `json:"addr"`
+	Age	 int `json:"age"`
+}
 
 /**
  * 测试读写redis以及incr方法
@@ -136,4 +144,23 @@ func ListUser(c *gin.Context) {
 	common.CheckErr(err)
 	msg := ""
 	c.JSON(http.StatusOK, gin.H{"msg": msg, "data": userArr})
+}
+
+
+func ConsumeMsg(c *gin.Context) {
+	var user User
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code":-1, "msg":err.Error()})
+		return
+	}
+	fmt.Printf("get message:%+v \n", user)
+	time.Sleep(200*time.Millisecond)
+	rand.Seed(time.Now().UnixNano())
+	code := rand.Int() % 2
+	var msg string = "ok"
+	if code != 1 {
+		msg = "fail"
+	}
+	c.JSON(http.StatusOK, gin.H{"code":code, "msg": msg})
 }
