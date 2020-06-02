@@ -12,11 +12,13 @@ func init() {
 	fmt.Println("in access.go, init()")
 	var err error
 	localIp := GetLocalIp()
-	if localIp == "192.168.56.107" {
-		localIp = "192.168.56.102"
+	/*if localIp == "192.168.56.107" {
+		localIp = "192.168.56.110"
 	} else {
 		localIp = "192.168.1.102"
-	}
+	}*/
+
+	localIp = "192.168.56.102"
 
 	SqlDB, err = sql.Open("mysql", fmt.Sprintf("root:SYF!123mysql@tcp(%s:3306)/test", localIp))
 	FailOnError(err, "can not connect database")

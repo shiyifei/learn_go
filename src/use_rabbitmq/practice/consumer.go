@@ -108,14 +108,14 @@ func MultiConsume() {
 
 func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) {
 	defer wg1.Done()
-	_, err := SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+	_, err := SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
 	if err != nil {
 		FailOnError(err, "send post request error one time")
 		writeToDB(exchange, queue, bindingKey, message)
 
 		time.Sleep(200*time.Millisecond)
 		//失败重试一次
-		_, err = SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
+		_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
 		if err != nil {
 			FailOnError(err, "send post request error, two times")
 
@@ -125,21 +125,6 @@ func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) 
 	}
 }
 
-func callBackA(exchange, queue, bindingKey, message string) {
-	_, err := SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
-	if err != nil {
-		FailOnError(err, "send post request error")
-		time.Sleep(200*time.Millisecond)
-		//失败重试一次
-		_, err = SendPostRequest("http://192.168.1.102:8100/mq/consume", message)
-		if err != nil {
-			FailOnError(err, "send post request error")
-
-			//处理失败或调用接口失败时，写入数据库
-			writeToDB(exchange, queue, bindingKey, message)
-		}
-	}
-}
 /**
 CREATE TABLE `failed_message` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

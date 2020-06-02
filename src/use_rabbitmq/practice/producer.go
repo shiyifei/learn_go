@@ -112,6 +112,7 @@ func MultiSendMsg() {
 	targetArr = append(targetArr, target{"queue.fanout", "exchange.fanout", "key.fanout", true})
 	targetArr = append(targetArr, target{"queue.direct", "", "queue.direct", false})
 	targetArr = append(targetArr, target{"jcque", "exchange_jc", "key:jc", true})
+	targetArr = append(targetArr, target{"jcque", "exchange_jc", "jc.xin.com", true})
 
 	var wg sync.WaitGroup
 	errList := make(chan error, 2 * len(targetArr))
