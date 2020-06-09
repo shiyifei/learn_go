@@ -25,7 +25,6 @@ func main() {
 	input := "user100000"
 	output := sha1Encrypt(input)
 	fmt.Println(input, output)
-	return
 
 	fmt.Println("Hello, shiyifei, what are you doing now ?")
 
@@ -52,14 +51,13 @@ func main() {
 	mailTo := []string{
 		"shiyifei@xin.com",
 		"625378510@qq.com",
-		"notverygood@163.com",
+		"shi_yi_fei@163.com",
 	}
 	//邮件主题为"Hello"
 	subject := "Hello, this is an testing email111"
 	// 邮件正文
-	body := "Good,hello,shiyfei, what are you doing now? why can not send to you?"
+	body := "Good,hello,shiyfei<br/> what are you doing now? <br/> why can not send to you?"
 	SendMail(mailTo, subject, body)
-
 }
 
 func SendMail(mailTo []string, subject string, body string) error {
@@ -74,7 +72,7 @@ func SendMail(mailTo []string, subject string, body string) error {
 	port, _ := strconv.Atoi(mailConn["port"]) //转换端口类型为int
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", "XD Game"+"<"+mailConn["user"]+">") //这种方式可以添加别名，即“XD Game”， 也可以直接用<code>m.SetHeader("From",mailConn["user"])</code> 读者可以自行实验下效果
+	m.SetHeader("From", "Test Email"+"<"+mailConn["user"]+">") //这种方式可以添加别名，即“XD Game”， 也可以直接用<code>m.SetHeader("From",mailConn["user"])</code> 读者可以自行实验下效果
 	m.SetHeader("To", mailTo...)                            //发送给多个用户
 	m.SetHeader("Subject", subject)                         //设置邮件主题
 	m.SetBody("text/html", body)                            //设置邮件正文

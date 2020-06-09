@@ -15,6 +15,12 @@ type Source struct {
 	exchange string
 	durable bool
 }
+const (
+	dateTemplate = "2006-01-02 15:04:05.000"  //golang时间格式 加入毫秒显示 如果是6个0，则是微秒，3个0表示不足三位时左侧会补齐0
+	resendDelay = 1* time.Second	//消息发送失败后多久重发
+	resendTimes = 1				//消息重发次数
+)
+
 
 var wgC sync.WaitGroup
 
@@ -42,6 +48,7 @@ func MultiConsume() {
 
 	sourceArr := make([]Source, 0)
 	sourceArr = append(sourceArr, Source{"simple:queue", "simple:#", "exchange_na", true})
+	sourceArr = append(sourceArr, Source{"simple:queue", "na.*.*", "exchange_na", true})
 	sourceArr = append(sourceArr, Source{"jcque", "key:**", "exchange_jc", true})
 
 	//fanout类型的exchange不需要绑定bindingKey
@@ -84,16 +91,14 @@ func MultiConsume() {
 
 			go func() {
 				for d := range msgs {
-					log.Printf("Received a message %s from queue:[%s] \n", d.Body, q.Name)
+					log.Printf("Received a message %s from queue:[%s] bindingKey:%s \n", d.Body, q.Name, s.bindingKey)
 					//time.Sleep(200*time.Millisecond)
-					//先给出应答，再调用接口发送消息，保证不影响后续并发
+					//先给出应答，再调用接口发送消息，保证不影响后续消息的写入速度，消费速度快
 					d.Ack(false)
 					var wg1 sync.WaitGroup
 					wg1.Add(1)
 					go callBack(s.exchange, s.queue, s.bindingKey, string(d.Body), &wg1)
 					wg1.Wait()
-					//writeToDB(s.exchange, s.queue, s.bindingKey, string(d.Body))
-					//callBackA(s.exchange, s.queue, s.bindingKey, string(d.Body))
 				}
 			}()
 
@@ -111,17 +116,36 @@ func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) 
 	_, err := SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
 	if err != nil {
 		FailOnError(err, "send post request error one time")
-		writeToDB(exchange, queue, bindingKey, message)
+		writeToDB(exchange, queue, bindingKey, message, err.Error())
 
 		time.Sleep(200*time.Millisecond)
-		//失败重试一次
-		_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
-		if err != nil {
-			FailOnError(err, "send post request error, two times")
 
-			//处理失败或调用接口失败时，写入数据库
-			writeToDB(exchange, queue, bindingKey, message)
-		}
+		ticker := time.NewTicker(resendDelay)
+		defer ticker.Stop()
+
+		var wg sync.WaitGroup
+		wg.Add(1)
+		var times int = 0
+
+		go func(t *time.Ticker) {
+			defer wg.Done()
+			for {
+				select {
+				case received := <- t.C	:		//注意这里的返回值是时间类型
+					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
+					//失败重试两次
+					_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+					if err != nil {
+						FailOnError(err, "send post request error, two times")
+					}
+					times++
+					if times >= resendTimes {
+						return
+					}
+				}
+			}
+		}(ticker)
+		wg.Wait()
 	}
 }
 
@@ -132,18 +156,18 @@ CREATE TABLE `failed_message` (
   `queue` varchar(30) NOT NULL DEFAULT '' COMMENT 'queue name',
   `binding_key` varchar(30) NOT NULL DEFAULT '' COMMENT 'binding key',
   `message` varchar(512) NOT NULL DEFAULT '' COMMENT 'message',
+  `error` varchar(50) NOT NULL DEFAULT '' COMMENT 'error',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
  */
 
-func writeToDB(exchange,queue,bindingKey,message string) {
+func writeToDB(exchange,queue,bindingKey,msg,errInfo string) {
 	//fmt.Println("in writeToDB(),111")
-	stmt, err := SqlDB.Prepare("insert into failed_message(exchange,queue,binding_key,message) values(?,?,?,?)")
+	stmt, err := SqlDB.Prepare("insert into failed_message(exchange,queue,binding_key,message,error) values(?,?,?,?,?)")
 	FailOnError(err, "prepare error")
-	res,err := stmt.Exec(exchange, queue, bindingKey, message)
+	_,err = stmt.Exec(exchange, queue, bindingKey, msg, errInfo)
 	FailOnError(err, "insert error")
-	fmt.Println("res,",res)
 }
 
 

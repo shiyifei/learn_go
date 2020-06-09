@@ -8,9 +8,48 @@ type Student struct {
 	age    int
 }
 
+type People interface {
+	Speak(string) string
+}
+
+type Customer struct{}
+
+func (stu *Customer) Speak(think string) (talk string) {
+	if think == "bitch" {
+		talk = "You are not a good boy"
+	} else {
+		talk = "hi"
+	}
+	return
+}
+
+func live() People {
+	var cus *Customer
+	return cus
+}
+
+
 var firstStudent Student
 
 func Go_struct() {
+	//会打印出A还是B呢，结果是打印出B 因为cus 这种类型已经实现了接口People的方法Speak,认为cus是该接口类型的变量
+	if live() == nil {
+		fmt.Println("AAAAAAAAAAAA")
+	} else {
+		fmt.Println("BBBBBBBBBBBB")
+	}
+
+
+	//var peo Customer
+	//peo = Customer{}
+	//调用peo.Speak()时，可以是上面注释掉的赋值语句，也可以是下面的赋值语句，这两句都是合法的
+	peo := &Customer{}
+
+	//var peo People = Customer{} //该语句会导致编译不通过，提示不是同一种类型
+
+	think := "bitch"
+	fmt.Println(peo.Speak(think))
+	return
 
 	firstStudent.name = "areyouok"
 

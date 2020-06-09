@@ -25,8 +25,9 @@ type RabbitMQ struct {
 const (
 	reconnectTimes = 180			//连接断开后可以重连多少次
 	reconnectDelay = 1 				//单位：time.Second 连接断开后多久重连
-	//resendDelay = 5* time.Second	//消息发送失败后多久重发
-	//resendTimes = 3				//消息重发次数
+	resendDelay = 1* time.Second	//消息发送失败后多久重发
+	resendTimes = 1				//消息重发次数
+	dateTemplate = "2006-01-02 15:04:05.000"  //go时间格式 加入毫秒显示 如果是6个0则是微秒，3个0表示不足三位时左侧会补齐0
 )
 
 
@@ -76,26 +77,23 @@ func (mq *RabbitMQ) handleReConnect(addr string) {
 }
 
 func (mq *RabbitMQ) connect(addr string) bool {
-	fmt.Println("arrive in connect(), addr:",addr)
 	conn, err := amqp.Dial(addr)
-	fmt.Println("arrive in connect(), err:",err)
 	if err != nil {
 		return false
 	}
 	ch, err := conn.Channel()
 	if err != nil {
-		fmt.Println("arrive in connect(), conn.Channel(), err:",err)
 		return false
 	}
-	fmt.Println("arrive in connect(), 111,")
+
 	mq.connection = conn
-	fmt.Println("arrive in connect(), 222, mq.connection isclosed:",mq.connection.IsClosed())
+
 	mq.channel = ch
-	fmt.Println("arrive in connect(), 333")
+
 	mq.notifyClose = make(chan *amqp.Error)
-	fmt.Println("arrive in connect(), 444")
+
 	mq.channel.NotifyClose(mq.notifyClose)		//加入监听事件
-	fmt.Println("arrive in connect(), 555")
+
 	fmt.Printf("arrive in connect(),receivers:%+v \n", mq.receivers)
 
 	mq.isConnected = true
@@ -148,7 +146,7 @@ func (mq *RabbitMQ) RegisterReceiver(receiver Receiver) {
 func (mq *RabbitMQ) listen(receiver Receiver) {
 	defer mq.wg.Done()
 
-	fmt.Printf("arrive in listen(), receiver:%+v \n", receiver)
+	//fmt.Printf("arrive in listen(), receiver:%+v \n", receiver)
 
 
 	queueName := receiver.QueueName()
@@ -167,9 +165,9 @@ func (mq *RabbitMQ) listen(receiver Receiver) {
 		receiver.OnError(fmt.Errorf("初始化队列 %s 失败：%s", queueName, err.Error()))
 	}
 
-	fmt.Println("routerKey:",routerKey)
+	//fmt.Println("routerKey:",routerKey)
 
-	fmt.Printf("arrive in listen(), after queueDeclare() \n")
+	//fmt.Printf("arrive in listen(), after queueDeclare() \n")
 
 	if mq.exchangeName != "" {
 		err = mq.channel.QueueBind(
@@ -187,7 +185,7 @@ func (mq *RabbitMQ) listen(receiver Receiver) {
 
 	//fmt.Printf("arrive in listen(), after queueDeclar() \n")
 
-	mq.channel.Qos(1, 0, true)	//确保rabbitmq会一个一个发消息
+	mq.channel.Qos(1, 0, true)	//确保rabbitmq会一个一个消费消息
 
 	msgs, err := mq.channel.Consume(
 		queueName,	//queue name
@@ -199,12 +197,15 @@ func (mq *RabbitMQ) listen(receiver Receiver) {
 		nil,		//args
 		)
 
-	fmt.Printf("arrive in listen(), after Consume() \n")
+	//fmt.Printf("arrive in listen(), after Consume() \n")
 
 	for msg := range msgs {
-		fmt.Printf("receive message:%s\n", msg.Body)
+		//fmt.Printf("receive message:%s\n", msg.Body)
 		msg.Ack(false)
-		receiver.OnReceive(mq.exchangeName, msg.Body)
+		var wg1 sync.WaitGroup
+		wg1.Add(1)
+		receiver.OnReceive(mq.exchangeName, string(msg.Body), &wg1)
+		wg1.Wait()
 	}
 
 }

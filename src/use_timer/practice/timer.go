@@ -31,7 +31,7 @@ func TestTimer() {
 
 
 	//NewTicker 返回一个新的Ticker,该Ticker包含一个通道字段，并会每隔时间段d后就向该通道发送当时的时间。
-	//它会调整时间价格或者丢弃tick信息以适应慢的接受者 如果d<=0会触发panic
+	//它会调整时间间隔或者丢弃tick信息以适应慢的接受者 如果d<=0会触发panic
 	//关闭该ticker可以释放相关资源
 	ticker := time.NewTicker(2*time.Second)
 	go func(t *time.Ticker) {

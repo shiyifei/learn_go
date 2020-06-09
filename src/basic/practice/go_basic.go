@@ -2,6 +2,8 @@ package practice
 
 import (
 	"fmt"
+	"runtime"
+	"sync"
 	"unsafe"
 )
 
@@ -35,7 +37,217 @@ type T struct {
 	t5 bool
 }
 
+/**
+	defer是后进先出的，panic需要等defer技术后才会向上传递
+	出现panic恐慌的时候，会先按照defer的后入先出的顺序执行，最后才会执行panic
+	近期有同学遇到多次执行的时候发现panic的执行顺序不定，那么是不是因为panic与defer没有先后关系呢
+	那为什么没有加recover()时候，panic执行顺序不定呢？
+	defer的执行顺序肯定是FILO的，但是没有被recover的panic协程（线程）可能争夺CPU的顺序比defer快，
+	所以造成了这样的情况，也可能是写缓存问题，所以对panic进行recover将其加入到defer队列中。
+ */
+func defer_call() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("one=",err)
+		}
+	}()
+	defer func() {
+		fmt.Println("打印前")
+	}()
+	defer func() {
+		fmt.Println("打印中")
+	}()
+	defer func() {
+		fmt.Println("打印后")
+	}()
+
+	panic("触发异常")
+}
+
+/**
+	打印后
+	打印中
+	打印前
+	panic:触发异常
+ */
+
+ type student struct {
+ 	Name string
+ 	Age int
+ }
+
+ /**
+ 	你会发现最终生成map实际上并不是我们想要的，里面只含有切片中的最后一个元素了
+ 	与Java的foreach一样，for range 都是使用副本的方式
+ 	m[stu.Name]=&stu实际上一致指向同一个指针， 最终该指针的值为遍历的最后一个struct的值拷贝
+  */
+ func pase_student() {
+ 	m := make(map[string]*student)
+ 	arrStudent := []student{
+ 		{Name:"zhao", Age:22},
+ 		{Name:"wang", Age:25},
+ 		{Name:"li", Age:24},
+	}
+ 	for _, stu := range arrStudent {
+ 		m[stu.Name] = &stu
+	}
+
+ 	for _, stu := range m {
+		fmt.Printf("stu:%+v\n", stu)
+	}
+ }
+
+ /**
+ 	将一个切片复制到map中的正确写法
+  */
+func parse_student() {
+	m := make(map[string]*student)
+	arrStudent := []student{
+		{Name:"zhao", Age:22},
+		{Name:"wang", Age:25},
+		{Name:"li", Age:24},
+	}
+
+	for i:=0;i<len(arrStudent);i++ {
+		m[arrStudent[i].Name] = &arrStudent[i]
+	}
+
+	for _, stu := range m {
+		fmt.Printf("stu:%+v\n", stu)
+	}
+}
+
+
+func exam(){
+	runtime.GOMAXPROCS(1)
+	var wg sync.WaitGroup
+	wg.Add(20)
+	for i:=0;i<10;i++ {
+		go func() {
+			fmt.Println("A:", i)
+			defer wg.Done()
+		}()
+	}
+	for i:=0;i<10;i++ {
+		go func(b int) {
+			fmt.Println("B:", b)
+			defer wg.Done()
+		}(i)
+	}
+	wg.Wait()
+}
+
+type people struct{}
+
+func (p *people) ShowA() {
+	fmt.Println("showA")
+	p.ShowB()
+}
+
+func (p *people) ShowB() {
+	fmt.Println("showB")
+}
+
+type teacher struct {
+	people
+}
+
+func (t *teacher) ShowB() {
+	fmt.Println("teacher showB")
+}
+
+func testSlice(){
+	s1 := make([]int, 0, 3)
+	for i := 0; i < cap(s1); i++ {
+		s1 = append(s1, i)
+	}
+	s2 := s1
+	fmt.Println("len(s1):", len(s1))
+	for i := 0; i < len(s1); i++ {
+		s1[i] = s1[i] + 1
+	}
+	fmt.Println(s1) //[1 2 3]
+	fmt.Println(s2) //[1 2 3]
+}
+
+type UserAges struct{
+	ages map[string]int
+	sync.Mutex
+}
+func (p *UserAges) Add(name string, age int) {
+	p.Lock()
+	defer p.Unlock()
+	p.ages[name] = age
+}
+
+/**
+	如果没有Lock()和Unlock()会有读写冲突的发生，竟态条件会有出现
+	加入锁，也就意味着当前时刻只能有一个协程来读或写map
+ */
+func (p *UserAges) Get(name string) int {
+	p.Lock()
+	defer p.Unlock()
+	if ret, ok := p.ages[name]; ok {
+		return ret
+	}
+	return -1
+}
+
+
+func testMultiReadWrite() {
+	var wg sync.WaitGroup
+	wg.Add(3)
+	ages := make(map[string]int)
+	userAges := &UserAges{ages:ages}
+	go func(p *UserAges){
+		defer wg.Done()
+		p.Add("zhangfei", 20)
+	}(userAges)
+
+	go func(p *UserAges) {
+		defer wg.Done()
+		v := p.Get("zhangfei")
+		fmt.Println("age:",v)
+	}(userAges)
+
+	go func(p *UserAges) {
+		defer wg.Done()
+		v := p.Get("zhangfei")
+		fmt.Println("age:",v)
+	}(userAges)
+	wg.Wait()
+}
+
+
 func Go_basic() {
+	testMultiReadWrite()
+	fmt.Println("============================")
+
+	testSlice()
+	fmt.Println("============================")
+	return
+	ter := teacher{}
+	/**
+	这是Golang的组合模式，可以实现OOP的继承。
+	被组合的类型People所包含的方法虽然升级成了外部类型Teacher这个组合类型的方法（一定要是匿名字段），但它们的方法(ShowA())调用时接受者并没有发生变化。
+	此时People类型并不知道自己会被什么类型组合，当然也就无法调用方法时去使用未知的组合者Teacher类型的功能。
+	 */
+	ter.ShowA()
+	ter.ShowB()
+	fmt.Println("============================")
+	exam()
+	fmt.Println("============================")
+	pase_student()
+	fmt.Println("============================")
+	parse_student()
+	fmt.Println("============================")
+	defer_call()
+
+	var n4, name, n5 = 100,"tom",888
+	fmt.Println("n4:",n4, "name:",name, "n5:",n5)
+
+
+
 	fmt.Printf("Hello,%s,your score s:%.2f,what are you doing now?age:%d,are you ok?%t \n",
 		username, score, age, isOk)
 

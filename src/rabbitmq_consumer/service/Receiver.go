@@ -1,7 +1,10 @@
 package service
 
 import (
+	"fmt"
 	"log"
+	"sync"
+	"time"
 )
 
 type Receiver interface {
@@ -9,7 +12,7 @@ type Receiver interface {
 	BindingKey() string
 	Durable() bool
 	OnError(error)
-	OnReceive(string,[]byte)bool
+	OnReceive(string,string, *sync.WaitGroup)bool
 }
 
 type Consumer struct {
@@ -42,10 +45,56 @@ func (c Consumer) OnError(err error) {
 	log.Println(err.Error())
 }
 
-func (c Consumer) OnReceive(exchange string, message []byte) bool {
+/*func (c Consumer) OnReceive(exchange string, message []byte) bool {
 	log.Printf("receive message:%s, exchange:%s,queue:%s,binding key:%s \n", message, exchange, c.queueName, c.bindingKey)
+	return true
+}*/
+
+
+func (c Consumer) OnReceive(exchange, message string, wg1 *sync.WaitGroup) bool {
+	defer wg1.Done()
+	_, err := SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+	if err != nil {
+		FailOnError(err, "send post request error once:")
+		writeToDB(exchange, c.queueName, c.bindingKey, message, err.Error())
+
+		ticker := time.NewTicker(resendDelay)
+		defer ticker.Stop()
+
+		var wg sync.WaitGroup
+		wg.Add(1)
+		var times int = 0
+
+		go func(t *time.Ticker) {
+			defer wg.Done()
+			for {
+				select {
+				case received := <- t.C	:		//注意这里的返回值是时间类型
+					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
+					//失败重试两次
+					_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+					if err != nil {
+						FailOnError(err, "send json request error")
+					}
+					times++
+					if times >= resendTimes {
+						return
+					}
+				}
+			}
+		}(ticker)
+		wg.Wait()
+		return false
+	}
 	return true
 }
 
+func writeToDB(exchange,queue,bindingKey,msg,errInfo string) {
+	//fmt.Println("in writeToDB(),111")
+	stmt, err := SqlDB.Prepare("insert into failed_message(exchange,queue,binding_key,message,error) values(?,?,?,?,?)")
+	FailOnError(err, "prepare error")
+	_,err = stmt.Exec(exchange, queue, bindingKey, msg, errInfo)
+	FailOnError(err, "insert error")
+}
 
 

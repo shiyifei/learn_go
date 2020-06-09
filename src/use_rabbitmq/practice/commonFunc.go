@@ -11,6 +11,7 @@ import(
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type JsonData struct {
@@ -57,12 +58,19 @@ func SendPostRequest(url, message string) (bool, error){
 	// req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 3 *time.Second,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		//panic(err)
+		return false, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return false, errors.New(resp.Status)
+	}
 
 	//fmt.Println("response Status:", resp.Status)
 	//fmt.Println("response Headers:", resp.Header)

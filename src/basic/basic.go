@@ -22,6 +22,15 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Go_struct()
+	fmt.Println("================")
+
+	practice.ThreadSafeSet()
+	fmt.Println("======end use_threadsafeset========")
+	return
+	practice.Go_basic()
+	fmt.Println("======end go_basic========")
+	return
 	practice.Go_Pointer()
 	fmt.Println("======end go_pointer========")
 	practice.Go_Pptr()
@@ -35,8 +44,7 @@ func main() {
 	practice.Use_runtime()
 	fmt.Println("======end use_runtime========")
 	return
-	practice.Go_struct()
-	fmt.Println("================")
+
 	practice.UseJson()
 	fmt.Println("================")
 	practice.TestGuid()

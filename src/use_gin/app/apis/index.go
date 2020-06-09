@@ -151,13 +151,17 @@ func ConsumeMsg(c *gin.Context) {
 	var user User
 	err := c.BindJSON(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code":-1, "msg":err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"code":-1, "msg":err.Error()})
 		return
 	}
 	fmt.Printf("get message:%+v \n", user)
 	time.Sleep(200*time.Millisecond)
 	rand.Seed(time.Now().UnixNano())
-	code := rand.Int() % 2
+	rand := rand.Int()
+	if rand % 7 == 0{
+		time.Sleep(3*time.Second)
+	}
+	code := rand % 4
 	var msg string = "ok"
 	if code != 1 {
 		msg = "fail"

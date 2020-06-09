@@ -109,10 +109,11 @@ func MultiSendMsg() {
 
 	targetArr := make([]target, 0)
 	targetArr = append(targetArr, target{"simple:queue", "exchange_na", "simple:queue", true})
+	targetArr = append(targetArr, target{"simple:queue", "exchange_na", "na.xin.com", true})
 	targetArr = append(targetArr, target{"queue.fanout", "exchange.fanout", "key.fanout", true})
 	targetArr = append(targetArr, target{"queue.direct", "", "queue.direct", false})
 	targetArr = append(targetArr, target{"jcque", "exchange_jc", "key:jc", true})
-	targetArr = append(targetArr, target{"jcque", "exchange_jc", "jc.xin.com", true})
+	targetArr = append(targetArr, target{"jcque", "exchange_jc", "jc.fat.xin.com", true})
 
 	var wg sync.WaitGroup
 	errList := make(chan error, 2 * len(targetArr))
@@ -167,7 +168,7 @@ func MultiSendMsg() {
 					errList <- err
 					return
 				}
-				log.Printf(" [x] Sent %s to queue:[%s]", dataBytes, q.Name)
+				log.Printf(" [x] Sent %s to queue:[%s],routerkey:%s", dataBytes, q.Name, t.routingKey)
 			}
 
 		}(t)
