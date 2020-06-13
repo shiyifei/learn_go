@@ -48,11 +48,10 @@ func MultiConsume() {
 
 	sourceArr := make([]Source, 0)
 	sourceArr = append(sourceArr, Source{"simple:queue", "simple:#", "exchange_na", true})
-	sourceArr = append(sourceArr, Source{"simple:queue", "na.*.*", "exchange_na", true})
 	sourceArr = append(sourceArr, Source{"jcque", "key:**", "exchange_jc", true})
 
 	//fanout类型的exchange不需要绑定bindingKey
-	sourceArr = append(sourceArr, Source{"queue.fanout", "", "exchange.fanout", true})
+	sourceArr = append(sourceArr, Source{"queue.fanout", "key.fanout", "exchange.fanout", true})
 	sourceArr = append(sourceArr, Source{"queue.direct", "#.direct", "", false})
 
 	/*	err = ch.ExchangeDeclare(exchange, "topic", true, false, false, false, nil)
@@ -113,7 +112,7 @@ func MultiConsume() {
 
 func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) {
 	defer wg1.Done()
-	_, err := SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+	_, err := SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
 	if err != nil {
 		FailOnError(err, "send post request error one time")
 		writeToDB(exchange, queue, bindingKey, message, err.Error())
@@ -134,7 +133,7 @@ func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) 
 				case received := <- t.C	:		//注意这里的返回值是时间类型
 					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
 					//失败重试两次
-					_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+					_, err = SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
 					if err != nil {
 						FailOnError(err, "send post request error, two times")
 					}

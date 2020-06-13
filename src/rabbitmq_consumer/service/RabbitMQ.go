@@ -9,6 +9,7 @@ import (
 	"log"
 	"time"
 )
+var mutex sync.Mutex
 
 type RabbitMQ struct {
 	wg sync.WaitGroup
@@ -37,46 +38,53 @@ func (mq *RabbitMQ) New(exchangeName, exchangeType string, durable bool) *Rabbit
 		exchangeType:exchangeType,
 		durable:durable,
 	}
+	client.notifyClose = make(chan *amqp.Error)
 	go client.handleReConnect(config.ConnectStr)
 	return &client
 }
 
 func (mq *RabbitMQ) handleReConnect(addr string) {
 	var disconnect *amqp.Error
-	var retryTimes int = 0
+
 	for {
-		mq.isConnected = false
-		log.Println("Attampting to connect:",addr,"disconnect:",disconnect)
-		for !mq.connect(addr) {
-			retryTimes += 1
-			if retryTimes >= reconnectTimes {
-				return
-			}
-			log.Println("Failed to connect. Retrying... retryTimes:",retryTimes)
-
-			duration := time.Duration(retryTimes * reconnectDelay) * time.Second
-			time.Sleep(duration)
-		}
-		if disconnect != nil && mq.connection != nil && !mq.connection.IsClosed() {
-			mq.prepareExchange()
-			if len(mq.receivers) > 0 {
-				for _, receiver := range mq.receivers {
-					mq.wg.Add(1)
-					go mq.listen(receiver)
-				}
-				mq.wg.Wait()
-			}
-		}
-
 		select {
 			case disconnect = <-mq.notifyClose:
 				log.Println("fail to connect rabbitmq server")
-				retryTimes = 0
+				mq.connection = nil
+				mq.channel = nil
+				mq.reconnect(addr, disconnect)
+		}
+	}
+}
+
+func (mq *RabbitMQ) reconnect(addr string, disconnect *amqp.Error) {
+	var retryTimes int = 0
+	log.Println("Attampting to connect:",addr,"disconnect:",disconnect)
+	for !mq.connect(addr) {
+		retryTimes += 1
+		if retryTimes >= reconnectTimes {
+			return
+		}
+		log.Println("Failed to connect. Retrying... retryTimes:",retryTimes)
+
+		duration := time.Duration(retryTimes * reconnectDelay) * time.Second
+		time.Sleep(duration)
+	}
+	if disconnect != nil && mq.connection != nil && !mq.connection.IsClosed() {
+		mq.prepareExchange()
+		if len(mq.receivers) > 0 {
+			for _, receiver := range mq.receivers {
+				mq.wg.Add(1)
+				go mq.listen(receiver)
+			}
+			mq.wg.Wait()
 		}
 	}
 }
 
 func (mq *RabbitMQ) connect(addr string) bool {
+	mutex.Lock()
+	defer mutex.Unlock()
 	conn, err := amqp.Dial(addr)
 	if err != nil {
 		return false
@@ -87,11 +95,7 @@ func (mq *RabbitMQ) connect(addr string) bool {
 	}
 
 	mq.connection = conn
-
 	mq.channel = ch
-
-	mq.notifyClose = make(chan *amqp.Error)
-
 	mq.channel.NotifyClose(mq.notifyClose)		//加入监听事件
 
 	fmt.Printf("arrive in connect(),receivers:%+v \n", mq.receivers)
@@ -121,21 +125,22 @@ func (mq *RabbitMQ) prepareExchange() error {
 }
 
 func (mq *RabbitMQ) Run() {
+	log.Println("in Run(),exchange:", mq.exchangeName)
 	defer mq.Close()
+	if !mq.connect(config.ConnectStr) {
+		log.Println("can not connect rabbitmq server")
+		return
+	}
+	mq.prepareExchange()
 
 	for {
-		if !mq.connect(config.ConnectStr) {
-			log.Println("can not connect rabbitmq server")
-		}
-		mq.prepareExchange()
 		for _, receiver := range mq.receivers {
 			mq.wg.Add(1)
 			go mq.listen(receiver)
 		}
 		mq.wg.Wait()
 
-
-		time.Sleep(3*time.Second)
+		time.Sleep(300*time.Millisecond)
 	}
 }
 
@@ -152,6 +157,10 @@ func (mq *RabbitMQ) listen(receiver Receiver) {
 	queueName := receiver.QueueName()
 	routerKey := receiver.BindingKey()
 	durable := receiver.Durable()
+
+	if mq.channel == nil {
+		return
+	}
 
 	_, err := mq.channel.QueueDeclare(
 		queueName,	//queue name

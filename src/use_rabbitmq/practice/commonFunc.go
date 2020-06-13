@@ -29,7 +29,7 @@ func RabbitMQConn() (conn *amqp.Connection, err error) {
 	var host string = "192.168.56.110"
 
 	localIp := GetLocalIp()
-	if localIp == "192.168.56.107" {
+	if localIp == "192.168.56.106" {
 		host = "192.168.56.110"
 	}
 

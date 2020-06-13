@@ -13,7 +13,7 @@ var SqlDB * sql.DB
  */
 func init() {
 	var err error
-	SqlDB, err = sql.Open("mysql", "root:SYF!123mysql@tcp(192.168.56.102:3306)/test")
+	SqlDB, err = sql.Open("mysql", "root:SYF!123mysql@tcp(192.168.56.105:3306)/test")
 	FailOnError(err, "can not connect to mysql server")
 	err = SqlDB.Ping()
 	FailOnError(err, "can not ping to mysql")

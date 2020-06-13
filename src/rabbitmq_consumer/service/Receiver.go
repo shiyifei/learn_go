@@ -53,7 +53,7 @@ func (c Consumer) OnError(err error) {
 
 func (c Consumer) OnReceive(exchange, message string, wg1 *sync.WaitGroup) bool {
 	defer wg1.Done()
-	_, err := SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+	_, err := SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
 	if err != nil {
 		FailOnError(err, "send post request error once:")
 		writeToDB(exchange, c.queueName, c.bindingKey, message, err.Error())
@@ -72,7 +72,7 @@ func (c Consumer) OnReceive(exchange, message string, wg1 *sync.WaitGroup) bool 
 				case received := <- t.C	:		//注意这里的返回值是时间类型
 					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
 					//失败重试两次
-					_, err = SendPostRequest("http://192.168.56.107:8100/mq/consume", message)
+					_, err = SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
 					if err != nil {
 						FailOnError(err, "send json request error")
 					}
