@@ -114,11 +114,20 @@ func MultiSendMsg() {
 	targetArr = append(targetArr, target{"jcque", "exchange_jc", "key:jc", true})
 
 	var wg sync.WaitGroup
+
 	errList := make(chan error, 2 * len(targetArr))
 	for _, t := range targetArr {
 		wg.Add(1)
 		go func(t target) {
 			defer wg.Done()
+			args := make(map[string]interface{})
+			args["x-dead-letter-exchange"] = "exchange.fail"
+			if t.queue == "jcque" {
+				args["x-dead-letter-routing-key"] = "from.queue.jc"
+			} else {
+				args["x-dead-letter-routing-key"] = "from."+t.queue
+			}
+
 			//声明或创建一个队列用来保存消息
 			q, err := ch.QueueDeclare(
 				t.queue,			//queue name
@@ -126,7 +135,7 @@ func MultiSendMsg() {
 				false,			//delete when unused
 				false,			//exclusive 独有的，排外的
 				false,			//no-wait
-				nil,			//arguments
+				args,			//arguments
 			)
 			if err != nil {
 				errList <- err
@@ -135,7 +144,7 @@ func MultiSendMsg() {
 			//构造发送的数据
 			rand.Seed(time.Now().UnixNano())
 
-			for i:=0; i<3;i++ {
+			for i:=0; i<10;i++ {
 				data := simpleDemo{
 					Name : "user"+ strconv.Itoa(rand.Int()%1000),
 					Addr : "Beijing",

@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 	"use_gin/app/common"
+	"use_gin/app/config"
 	"use_gin/app/models"
 	"use_gin/app/services"
 )
@@ -27,7 +28,7 @@ type User struct {
  */
 func IndexApi(c *gin.Context) {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "192.168.56.102:6379",
+		Addr:     config.ServerHost+":6379",
 		Password: "",
 		DB:       0,
 	})

@@ -26,11 +26,13 @@ func RabbitMQConn() (conn *amqp.Connection, err error) {
 	var pwd string = "manager"
 
 	//RabbitMQ Broker的ip地址
-	var host string = "192.168.56.110"
+	var host string = "192.168.1.102"
 
 	localIp := GetLocalIp()
 	if localIp == "192.168.56.106" {
 		host = "192.168.56.110"
+	} else if localIp == "192.168.1.102" {
+		host = "192.168.1.110"
 	}
 
 	//RabbitMQ Broker监听的端口

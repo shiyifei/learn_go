@@ -3,10 +3,10 @@ package practice
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"sync"
 	"time"
-
-	//"time"
+	"github.com/streadway/amqp"
 )
 
 type Source struct {
@@ -23,19 +23,56 @@ const (
 
 
 var wgC sync.WaitGroup
+var callbackUrl string
 
-func MultiConsume() {
-	conn, err := RabbitMQConn()
+var notifyClose chan *amqp.Error
+var conn *amqp.Connection
+var ch *amqp.Channel
+var notifyReturn chan amqp.Return
+
+func init() {
+	callbackUrl = fmt.Sprintf("http://%s:8100/mq/consume", GetLocalIp())
+	fmt.Println("callbackUrl:",callbackUrl)
+	runtime.GOMAXPROCS(2)
+	notifyClose = make(chan *amqp.Error)
+	notifyReturn = make(chan amqp.Return, 1)
+	go handleReConnect()
+	go handlePubUndeliver()
+}
+
+
+func reconnect() {
+	var retryTimes int = 0
+	reconnectTimes := 10
+	reconnectDelay := 100
+	log.Println("Attampting to connect to rabbitmq")
+	for {
+		_,err := RabbitMQConn()
+		if err == nil {
+			return
+		}
+		retryTimes += 1
+		if retryTimes >= reconnectTimes {
+			return
+		}
+		log.Println("Failed to connect. Retrying... retryTimes:",retryTimes)
+
+		duration := time.Duration(retryTimes * reconnectDelay) * time.Millisecond
+		time.Sleep(duration)
+	}
+}
+
+
+func openChannel() {
+	var err error
+	conn, err = RabbitMQConn()
 	FailOnError(err, "Failed to connect to RabbitMQ")
+	ch, err = conn.Channel()
+	fmt.Printf("in openChannel(), ch:%+v\n",ch)
 
-	defer conn.Close()
-
-	ch, err := conn.Channel()
 	FailOnError(err ,"failed to open a channel")
-
-	defer ch.Close()
-
-
+	ch.NotifyClose(notifyClose)
+	ch.NotifyReturn(notifyReturn)
 	//函数原型：func (ch *Channel) Qos(prefetchCount, prefetchSize int, global bool) error
 	// rabbitMQ提供了一种qos（服务质量保证）的功能，
 	// 即非自动确认消息的前提下，如果有一定数目的消息（通过consumer或者Channel设置qos）未被确认，不进行新的消费。
@@ -43,8 +80,42 @@ func MultiConsume() {
 		1, //设置为N，告诉rabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则consumer将block掉，直到有消息ack
 		0,
 		true)
-
 	FailOnError(err, "failed to set Qos")
+}
+
+func handleReConnect() {
+	var disconnect *amqp.Error
+	for {
+		select {
+		case disconnect = <-notifyClose:
+			log.Println("fail to connect rabbitmq server,disconnect:",disconnect)
+			conn.Close()
+			reconnect()
+			MultiConsume()
+		}
+	}
+}
+
+func handlePubUndeliver() {
+	var ret amqp.Return
+	for {
+		select {
+		case ret = <-notifyReturn:
+			log.Println("publish undeliver,ret:",ret)
+			conn.Close()
+			reconnect()
+			MultiConsume()
+		}
+	}
+}
+
+
+
+
+func MultiConsume() {
+	defer conn.Close()
+	openChannel()
+	defer ch.Close()
 
 	sourceArr := make([]Source, 0)
 	sourceArr = append(sourceArr, Source{"simple:queue", "simple:#", "exchange_na", true})
@@ -58,17 +129,23 @@ func MultiConsume() {
 		if err != nil {
 			log.Fatalf("exchange.declare: %s", err)
 		}*/
-
-
 	forever := make(chan bool)
 
 	var wg sync.WaitGroup
 	wg.Add(len(sourceArr))
 	for _, s := range sourceArr {
-		go func(s Source) {
+		go func(s Source, ch *amqp.Channel) {
 			defer wg.Done()
-			q, err := ch.QueueDeclare(s.queue, s.durable, false, false, false, nil,)
-			FailOnError(err, "failed to declare a queue")
+			args := make(map[string]interface{})
+			args["x-dead-letter-exchange"] = "exchange.fail"
+			if s.queue == "jcque" {
+					args["x-dead-letter-routing-key"] = "from.queue.jc"
+				} else {
+					args["x-dead-letter-routing-key"] = "from."+s.queue
+			}
+
+			q, err := ch.QueueDeclare(s.queue, s.durable, false, false, false, args,)
+			FailOnError(err, "failed to declare a queue:")
 
 			//加上这一段之后，有时候会报错，先去掉
 			/*if s.exchange != "" {
@@ -95,14 +172,17 @@ func MultiConsume() {
 					//先给出应答，再调用接口发送消息，保证不影响后续消息的写入速度，消费速度快
 					d.Ack(false)
 					var wg1 sync.WaitGroup
+
 					wg1.Add(1)
 					go callBack(s.exchange, s.queue, s.bindingKey, string(d.Body), &wg1)
 					wg1.Wait()
+
+					//callBack(s.exchange, s.queue, s.bindingKey, string(d.Body), &wg1)
 				}
 			}()
 
 			log.Printf(" queue:[%s] Waiting for messages...", q.Name)
-		}(s)
+		}(s, ch)
 	}
 	wg.Wait()
 
@@ -112,7 +192,7 @@ func MultiConsume() {
 
 func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) {
 	defer wg1.Done()
-	_, err := SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
+	_, err := SendPostRequest(callbackUrl, message)
 	if err != nil {
 		FailOnError(err, "send post request error one time")
 		writeToDB(exchange, queue, bindingKey, message, err.Error())
@@ -133,7 +213,7 @@ func callBack(exchange, queue, bindingKey, message string, wg1 *sync.WaitGroup) 
 				case received := <- t.C	:		//注意这里的返回值是时间类型
 					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
 					//失败重试两次
-					_, err = SendPostRequest("http://192.168.56.106:8100/mq/consume", message)
+					_, err = SendPostRequest(callbackUrl, message)
 					if err != nil {
 						FailOnError(err, "send post request error, two times")
 					}

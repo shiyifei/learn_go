@@ -15,6 +15,8 @@ func init() {
 	fmt.Println("in access.go, init()")
 	var err error
 	localIp := GetLocalIp()
+	fmt.Println("localIP:",localIp)
+
 	if localIp == "192.168.56.107" {
 		localIp = "192.168.56.102"
 	}
