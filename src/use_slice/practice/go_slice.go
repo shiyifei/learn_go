@@ -76,7 +76,7 @@ func BasicOperate() {
 	numbers := []int{1, 2, 4, 5, 6, 7}
 	printArr(numbers)
 
-	//数组的赋值
+	//切片赋值
 	var arrInt = make([]int, 3, 10)
 	arrInt[0] = 11
 	arrInt[1] = 12
