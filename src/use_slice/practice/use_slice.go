@@ -7,6 +7,7 @@ import (
 )
 
 func InStepOperate() {
+	//arrStr是数组类型，会自动计算长度
 	arrStr := [...]string{"java", "c", "c++", "python", "c#", "basic"}
 	fmt.Printf("arrStr: length=%d,cap=%d,type is: %T, value is:%v\n", len(arrStr), cap(arrStr), arrStr, arrStr)
 	sliceStr := arrStr[1:4:5] //下标一表示起始位置，下标二表示结束位置（不包含该位置元素），下标三表示cap容量 cap=len+1,容量可以设置大于len+1
@@ -91,10 +92,25 @@ func InStepOperate() {
 	useAppend()
 
 	arrInt := []int{12, 34, 1, 4, 5, 6, 7, 23, 56, 12, 34, 56}
-	sort.Ints(arrInt)
+	sort.Ints(arrInt)	//对数组排序，升序排列
 	arrUnique := RemoveDuplicate(arrInt)
 	fmt.Println("   arrInt:", arrInt)
 	fmt.Println("arrUnique:", arrUnique)
+
+	//将[]interface{}转换为[]int
+	arrSource := make([]int, len(arrUnique))
+	for i := range arrUnique {
+		arrSource[i]= arrUnique[i].(int)
+	}
+
+	var target int = 66
+	pos,isExist := searchSlice(arrSource, target)
+	if !isExist {
+		fmt.Printf("target:%d is not Exist in arrSource \n", target)
+	} else {
+		fmt.Printf("target:%d is Existed in arrSource, position:%d \n", target, pos)
+	}
+
 
 }
 
@@ -107,6 +123,7 @@ func changeSlice(strSlice []string) {
 
 /*
 	函数内部追加写入的数据不会在外部生效，因为append函数执行后，会导致s切片的地址发生变化，传入的切片与外部的切片已经不同
+	实参实际上是对参数的值copy的副本，修改副本不会影响原来的值。
 */
 func change(s ...string) {
 	s[0] = "Basic"
@@ -171,6 +188,19 @@ func RemoveDuplicate(s interface{}) (ret []interface{}) {
 	}
 	return ret
 }
+
+/**
+	如何查找slice中的元素
+	sourceArr 是来源切片，这里假定是int类型的
+	target 是查找目标
+ */
+ func searchSlice(sourceArr []int, target int) (int, bool)  {
+ 	//SearchInts在已排序的整数片中搜索x，并返回由搜索指定的索引。返回值是插入x的索引(当x不存在时可能是len(a))。切片必须按升序排序。
+ 	pos := sort.SearchInts(sourceArr, target)
+ 	fmt.Printf("sourceArr:%+v, target:%d, pos:%d \n", sourceArr, target, pos)
+ 	isExist := pos < len(sourceArr) && sourceArr[pos] == target
+ 	return pos, isExist
+ }
 
 func printSlice(arr []string) {
 	fmt.Printf("length=%d,cap=%d,type is: %T, value is:%v\n", len(arr), cap(arr), arr, arr)
