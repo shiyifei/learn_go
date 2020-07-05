@@ -18,6 +18,45 @@ type Role struct {
 	Parentid int
 }
 
+//测试切片追加值是否影响原切片的值
+func SliceExam1() {
+	slice := make([]int, 5, 5)
+	slice[0] =1
+	slice[1] =2
+	changeIt(slice...) //追加的元素值实际上已经超出了原切片的最大容量
+	fmt.Println("after changeIt(), slice:",slice)
+
+	changeIt(slice[0:2]...)
+	fmt.Println("after changeIt slice[0:2]:",slice,",len:",len(slice),",cap:",cap(slice))
+}
+
+func changeIt(s ...int) {
+	s = append(s, 3)  //已经超出原切片s的容量，但是并没有返回，并没有改变原切片的值
+	fmt.Printf("in changeIt(), s:%+v, len:%d, cap:%d \n",s, len(s), cap(s))
+}
+
+//测试for range数组的机制
+func SliceExam2() {
+	var a = [5]int{1,2,3,4,5}
+	var b [5]int
+
+	//其实for range只是针对数组的副本进行的操作，遍历或修改v值， 并不影响a
+	for i,v := range a {
+		if i == 0 {
+			a[1] = 12	//这种赋值语句是生效的
+			a[2] = 13
+ 		}
+		fmt.Printf("in for range(){}, i=%d, a:%+v \n", i, a)
+		b[i] = v
+		v = v*2
+	}
+
+	fmt.Println("a:",a)		//{1,12,13,4,5}
+	fmt.Println("b:", b)	//{1,2,3,4,5}
+
+}
+
+
 //有一个上下级关系的数组
 //要求根据某一个roleid找到其所有子节点，要求多级子节点都要查询出来
 func TestSlice() {
@@ -50,9 +89,9 @@ func TestSlice() {
 	sort.Ints(keys)
 
 	currSystemRoles := make([]int, 0)
-	currSystemRoles = append(currSystemRoles, 270)
+	currSystemRoles = append(currSystemRoles, 270) //先追加一个初始节点
 
-	//如果直接遍历roles,不能保证遍历的顺序是按照由小到大输出的。
+	//如果直接遍历roles,不能保证遍历的顺序是按照由小到大输出的，但是使用排序后的keys是可以有序遍历的。
 	for _, k := range keys {
 		fmt.Printf("v:%+v \n", roles[k])
 		for _, v1 := range currSystemRoles {
@@ -109,7 +148,7 @@ func BasicOperate() {
 	book1.name = "php"
 	book1.author = "shiyf"
 	book1.pubtime = "2019-04-21"
-	book1.price = 36.5
+	book1.price = 57.2
 
 	var book2 Book
 	book2.name = "java"
@@ -141,7 +180,7 @@ func BasicOperate() {
 	var books = make([]Book, len(arrBook), 2*cap(arrBook))
 	copy(books, arrBook)  //copy方法中的第一个参数是目标数据，第二个参数是源数据
 
-	//copy之后修改值，不会影响前置
+	//copy之后修改值，不会影响源切片的值
 	books[0].author = "shiyifei"
 	fmt.Println("after copying and modifing books[0], books:")
 	printBookArr(books)
@@ -149,6 +188,7 @@ func BasicOperate() {
 	fmt.Println("after copying and modifing books[0], arrBook:")
 	printBookArr(arrBook)
 
+	//切片的排序操作，按照name值大小升序排列
 	sort.Slice(arrBook, func(i,j int) bool {return arrBook[i].name < arrBook[j].name})
 	fmt.Println("after sort by book name, arrBook:")
 	printBookArr(arrBook)

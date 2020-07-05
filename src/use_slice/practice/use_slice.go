@@ -111,7 +111,6 @@ func InStepOperate() {
 		fmt.Printf("target:%d is Existed in arrSource, position:%d \n", target, pos)
 	}
 
-
 }
 
 /*
