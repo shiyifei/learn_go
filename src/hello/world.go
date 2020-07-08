@@ -49,7 +49,6 @@ func main() {
 
 	//定义收件人
 	mailTo := []string{
-		"shiyifei@xin.com",
 		"625378510@qq.com",
 		"shi_yi_fei@163.com",
 	}
@@ -64,7 +63,7 @@ func SendMail(mailTo []string, subject string, body string) error {
 	//定义邮箱服务器连接信息，如果是阿里邮箱 pass填密码，qq邮箱填授权码
 	mailConn := map[string]string{
 		"user": "notverygood@163.com",
-		"pass": "SS971456jk",
+		"pass": "secret",
 		"host": "smtp.163.com",
 		"port": "465",
 	}
