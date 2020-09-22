@@ -20,10 +20,7 @@ func UseString() {
 
 	//获取字符串实际文字长度
 	length := getStrLength(name)
-	fmt.Printf("length of %s is %d \n", name, length)
-
-
-
+	fmt.Printf("length of str:[%s] is %d \n", name, length)
 }
 
 

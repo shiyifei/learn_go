@@ -27,10 +27,8 @@ func main() {
 
 	practice.ThreadSafeSet()
 	fmt.Println("======end use_threadsafeset========")
-	return
 	practice.Go_basic()
 	fmt.Println("======end go_basic========")
-	return
 	practice.Go_Pointer()
 	fmt.Println("======end go_pointer========")
 	practice.Go_Pptr()
@@ -43,6 +41,8 @@ func main() {
 	fmt.Println("======end Use_assign========")
 	practice.Use_runtime()
 	fmt.Println("======end use_runtime========")
+	practice.UseString()
+	fmt.Println("======end user_string========")
 	return
 
 	practice.UseJson()

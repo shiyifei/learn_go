@@ -1,4 +1,14 @@
+/**
+GO中的数组是值类型，赋值给另外一个变量时实际上是原始数组的一个副本，修改该变量的值不会影响原数组的值。
+slice是引用类型, 是对现有数组的引用
+切片持有对底层数组的引用。只要切片在内存中，数组就不能被垃圾回收。在内存管理方面，这是需要注意的。
+让我们假设我们有一个非常大的数组，我们只想处理它的一小部分。
+然后，我们由这个数组创建一个切片，并开始处理切片。这里需要重点注意的是，在切片引用时数组仍然存在内存中。
+一种解决方法是使用 copy 函数 func copy(dst，src[]T)int 来生成一个切片的副本。
+这样我们可以使用新的切片，原始数组可以被垃圾回收。
+ */
 package practice
+
 
 import (
 	"fmt"
@@ -10,6 +20,29 @@ func InStepOperate() {
 	//arrStr是数组类型，会自动计算长度
 	arrStr := [...]string{"java", "c", "c++", "python", "c#", "basic"}
 	fmt.Printf("arrStr: length=%d,cap=%d,type is: %T, value is:%v\n", len(arrStr), cap(arrStr), arrStr, arrStr)
+
+	//多维数组的写法
+	var arrMul [3][2]string
+	arrMul[0][0] = "are"
+	arrMul[0][1] = "you"
+	arrMul[1][0] = "ok"
+	arrMul[1][1] = "how"
+	arrMul[2][0] = "are"
+	arrMul[2][1] = "you"
+
+	//定义一个三行两列的数组
+	arr32 := [3][2]string {
+		{"hello", "shiyf"},
+		{"what", "are"},
+		{"you", "doing"}, //注意这里的逗号不能省略
+	}
+	for i, v1 := range arr32 {
+		for j, v2 := range v1 {
+			fmt.Printf("row=%d,col=%d, %s \n", i,j, v2)
+		}
+	}
+	fmt.Printf("\n")
+
 	sliceStr := arrStr[1:4:5] //下标一表示起始位置，下标二表示结束位置（不包含该位置元素），下标三表示cap容量 cap=len+1,容量可以设置大于len+1
 	printSlice(sliceStr)
 
@@ -17,7 +50,8 @@ func InStepOperate() {
 	fmt.Println("after assigning slice, arrStr:")
 	sliceStr = append(sliceStr, "ruby")
 
-	//不超容量重新赋值后之前的数组会跟着改变
+	//不超容量重新赋值后，原数组内容会跟着改变
+	//切片的长度是切片中的元素数，切片的容量是创建切片索引开始的底层数组的元素个数
 	fmt.Printf("arrStr: length=%d,cap=%d,type is: %T, value is:%v\n", len(arrStr), cap(arrStr), arrStr, arrStr)
 
 	printSlice(sliceStr)
@@ -25,13 +59,13 @@ func InStepOperate() {
 	sliceStr2 := arrStr[1:4]
 	fmt.Println("after assigning slice again")
 	sliceStr2 = append(sliceStr2, "ruby", "php", "javascript", "pl-sql")
-	fmt.Println(arrStr) //超容量重新赋值后之前的数组不会跟着改变
+	fmt.Println(arrStr) //超容量重新赋值后，原数组不会跟着改变
 	fmt.Println("len(sliceStr2),cap(sliceStr2)", len(sliceStr2), cap(sliceStr2))
 	fmt.Println(sliceStr2)
 
 	sliceStr3 := []string{"are", "you", "ok"}
 	var sliceStr4 = make([]string, 3)
-	copy(sliceStr4, sliceStr3) //copy会复制原有切片的值，修改时不影响原有元素。
+	copy(sliceStr4, sliceStr3) //copy会复制原有切片的值，修改时不影响原有元素，原有的切片可以尽快被垃圾回收掉。
 	var sliceStr5 = make([]string, 5, 10)
 
 	sliceStr4[0] = "how"
@@ -92,7 +126,7 @@ func InStepOperate() {
 	useAppend()
 
 	arrInt := []int{12, 34, 1, 4, 5, 6, 7, 23, 56, 12, 34, 56}
-	sort.Ints(arrInt)	//对数组排序，升序排列
+	sort.Ints(arrInt)	//对切片排序，升序排列
 	arrUnique := RemoveDuplicate(arrInt)
 	fmt.Println("   arrInt:", arrInt)
 	fmt.Println("arrUnique:", arrUnique)
