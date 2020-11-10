@@ -11,8 +11,8 @@ import "fmt"
 /*
 	函数作为参数，传递给其他函数
  */
-func simple(a func(a,b int) int ) {
-	fmt.Println(a(112,442))
+func simple(a func(a,b int) int ,a1 int,b1 int) {
+	fmt.Println(a(a1,b1))
 }
 
 /*
@@ -53,7 +53,7 @@ func Show() {
 	}
 
 	//调用时，直接传入函数类型的变量
-	simple(funcA)
+	simple(funcA, 123,324)
 
 	funcB := exam()
 	result := funcB(11, 655)

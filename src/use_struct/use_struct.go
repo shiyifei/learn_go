@@ -5,6 +5,9 @@ import(
 )
 
 func main() {
+	UseStruct.Test()
+	return
+
 	emp := UseStruct.NewEmployee("wangzhongwei", 34, "wangzhongwei@163.com")
 	student := UseStruct.NewStudent("wanggengke", 29, "tsinghua")
 
