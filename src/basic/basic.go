@@ -22,6 +22,9 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Use_defer()
+	return
+
 	practice.Go_struct()
 	fmt.Println("================")
 
