@@ -32,6 +32,30 @@ type Message struct {
 	Name string
 }
 
+type Response struct {
+	Code int `json:code`
+	Message string `json:msg`
+	Data []interface{} `json:data`
+ }
+type User struct {
+	Id int `json:user_id`
+	Username string `json:username`
+	Age byte `json:age`
+	Email string `json:email`
+}
+
+var strJson String
+
+func init() {
+	strJson = `{
+				"code":0,
+				"msg":"ok",
+				"data":[{"user_id":1, "username":"wangxiao", "age":23, "email":"wangxiao@a.com"},
+						{"user_id":3, "username":"zhangle", "age":28, "email":"zhanglei@1.com"},
+						]
+				}`
+}
+
 func UseJson() {
 	var obj = ajaxReturn("ok", "")
 	fmt.Printf("obj.code=%s,obj.msg=%s \n", obj["code"], obj["msg"])
@@ -45,6 +69,24 @@ func ajaxReturn(code, msg string) map[string]string {
 		"msg":  msg,
 	}
 }
+
+func jsonDecode() {
+	dec := json.NewDecoder(strings.NewReader(strJson))
+	for {
+		var obj Response
+		err := dec.Decode(&obj)
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Printf("%d:%s \n", obj.Code, obj.Message)
+			for k, v := range obj.Data {
+				//todo:如何将[]interface{}转换为[]User
+			}
+		}
+}
+
 
 //json转结构体
 func jsonToStruct() {
@@ -95,12 +137,11 @@ func json_encode(data interface{}) (string, error) {
 	return string(bytes), nil
 }
 
-/*func json_decode(json string) (map[string]interface{}, error) {
+func json_decode(json string) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	err := json.Unmarshal(json)
 	if err != nil {
-		return nil, error
+		return nil, err
 	}
 	return result, nil
 }
-*/

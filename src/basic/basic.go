@@ -22,6 +22,10 @@ func CustomerRecover2() {
 }
 
 func main() {
+	practice.Usejson()
+	fmt.Println("================")
+	return
+
 	practice.Go_struct()
 	fmt.Println("================")
 
