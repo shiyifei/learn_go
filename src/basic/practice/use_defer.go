@@ -10,7 +10,6 @@ func Use_defer() {
 	aboutCondition3()
 	ret := aboutCondition4()
 	fmt.Println("call acoutCondition4(),ret:", ret)
-
 }
 
 /**
