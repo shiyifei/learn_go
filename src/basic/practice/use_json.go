@@ -70,6 +70,7 @@ func ajaxReturn(code, msg string) map[string]string {
 	}
 }
 
+/*
 func jsonDecode() {
 	dec := json.NewDecoder(strings.NewReader(strJson))
 	for {
@@ -86,6 +87,7 @@ func jsonDecode() {
 			}
 		}
 }
+*/
 
 
 //json转结构体

@@ -24,7 +24,8 @@ func CustomerRecover2() {
 func main() {
 	practice.Usejson()
 	fmt.Println("================")
-	return
+
+	practice.Use_defer()
 
 	practice.Go_struct()
 	fmt.Println("================")
