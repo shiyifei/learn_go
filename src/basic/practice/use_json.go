@@ -2,6 +2,7 @@ package practice
 
 import (
 	"encoding/json"
+	mapstructure "github.com/mitchellh/mapstructure"
 	"fmt"
 	"io"
 	"strconv"
@@ -9,22 +10,22 @@ import (
 )
 
 type Order struct {
-	Name        string   `json:name`
-	OrderItem   []Item   `json:item`
-	OrderRefund []Refund `json:refund`
+	Name        string   `json:"name"`
+	OrderItem   []Item   `json:"item"`
+	OrderRefund []Refund `json:"refund"`
 }
 
 type Item struct {
-	Name string `json:name`
-	Oid  int    `json:oid`
+	Name string `json:"name"`
+	Oid  int    `json:"oid"`
 }
 
 type Refund struct {
-	Name    string `json:name`
-	Item    int    `json:item`
-	Content string `json:content`
-	Imgs    string `json:imgs`
-	Status  string `json:status`
+	Name    string `json:"name"`
+	Item    int    `json:"item"`
+	Content string `json:"content"`
+	Imgs    string `json:"imgs"`
+	Status  string `json:"status"`
 }
 
 type Message struct {
@@ -32,27 +33,32 @@ type Message struct {
 	Name string
 }
 
-type Response struct {
-	Code int `json:code`
-	Message string `json:msg`
-	Data []interface{} `json:data`
+type Response1 struct {
+	Code int `json:"code"`
+	Message string `json:"msg"`
+	Data []User `json:"data"`
  }
 type User struct {
-	Id int `json:user_id`
-	Username string `json:username`
-	Age byte `json:age`
-	Email string `json:email`
+	UserId int `json:"user_id" mapstructure:"user_id"`		//这里注意要有mapstructure这个标签才行的
+	Username string `json:"username"`
+	Age byte `json:"age"`
+	Email string `json:"email"`
 }
 
-var strJson String
+type Response2 struct {
+	Code int `json:"code"`
+	Message string `json:"msg"`
+	Data []map[string]interface{} `json:"data"`
+}
+
+var strJson string
 
 func init() {
 	strJson = `{
-				"code":0,
+				"code":200,
 				"msg":"ok",
 				"data":[{"user_id":1, "username":"wangxiao", "age":23, "email":"wangxiao@a.com"},
-						{"user_id":3, "username":"zhangle", "age":28, "email":"zhanglei@1.com"},
-						]
+						{"user_id":3, "username":"zhangle", "age":28, "email":"zhanglei@1.com"}]
 				}`
 }
 
@@ -63,6 +69,14 @@ func UseJson() {
 	structToJson()
 }
 
+
+func JsonEncodeDecode() {
+	fmt.Println("arrive in here ,JsonEncodeDecode() ")
+	jsonDecode1()
+	fmt.Println("===================================================")
+	jsonDecode2()
+}
+
 func ajaxReturn(code, msg string) map[string]string {
 	return map[string]string{
 		"code": code,
@@ -70,24 +84,55 @@ func ajaxReturn(code, msg string) map[string]string {
 	}
 }
 
-/*
-func jsonDecode() {
-	dec := json.NewDecoder(strings.NewReader(strJson))
-	for {
-		var obj Response
-		err := dec.Decode(&obj)
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Printf("%d:%s \n", obj.Code, obj.Message)
-			for k, v := range obj.Data {
-				//todo:如何将[]interface{}转换为[]User
-			}
-		}
+/**
+	直接转成预定类型的变量
+ */
+func jsonDecode1() {
+	var obj Response1
+	err := json.Unmarshal([]byte(strJson), &obj)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("obj is:%+v \n", obj)
+
+	fmt.Printf("obj.Code is: %+v \n", obj.Code)
+	fmt.Printf("obj.Message is: %+v \n", obj.Message)
+	for _,v := range obj.Data {
+		fmt.Printf("data is: %#v \n", v)
+	}
 }
-*/
+
+/**
+	将list中的数据由map[string]interface{}转换为User
+ */
+func jsonDecode2() {
+	var obj Response2
+	err := json.Unmarshal([]byte(strJson), &obj)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("obj is:%+v \n", obj)
+
+	fmt.Printf("obj.Code is: %+v \n", obj.Code)
+	fmt.Printf("obj.Message is: %+v \n", obj.Message)
+
+	//使用第三方类库将map[string]interface() 强制转换为 []User
+	var mapInstance = make(map[string]interface{})
+	for _,mapInstance = range obj.Data {
+		fmt.Printf("data is: %#v \n", mapInstance)
+		//mapInstance = v
+		var user User
+		err = mapstructure.Decode(mapInstance, &user)
+		if err != nil {
+			fmt.Println("err is:",err)
+		} else {
+			fmt.Printf("user is:%#v \n", user)
+		}
+	}
+}
+
+
+
 
 
 //json转结构体
@@ -139,11 +184,11 @@ func json_encode(data interface{}) (string, error) {
 	return string(bytes), nil
 }
 
-func json_decode(json string) (map[string]interface{}, error) {
+/*func json_decode(json string) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	err := json.Unmarshal(json)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
-}
+}*/

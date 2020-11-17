@@ -12,6 +12,8 @@ func main() {
 
 	practice.Test()*/
 
-	practice.TestDefer()
-	practice.MapOperation()
+	//practice.TestDefer()
+	//practice.MapOperation()
+
+	practice.JsonDecode()
 }

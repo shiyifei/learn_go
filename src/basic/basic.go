@@ -22,7 +22,9 @@ func CustomerRecover2() {
 }
 
 func main() {
-	practice.Usejson()
+	practice.JsonEncodeDecode()
+	return
+	practice.UseJson()
 	fmt.Println("================")
 
 	practice.Use_defer()
