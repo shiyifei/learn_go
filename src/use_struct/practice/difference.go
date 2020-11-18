@@ -38,11 +38,19 @@ func (d *Dept) Relocate(building string, floor uint8) {
 	d.floor = floor
 }
 
+func (d *Dept) SetName1(name string) {
+	d.name = name
+}
+
 func Test() {
 	dept1 := Dept{
 		name:     "MySohu",
 		building: "Internet",
 		floor:    7}
+
+	dept1.SetName1("areyouok")
+	fmt.Println(dept1)
+
 	switch v := interface{}(dept1).(type) {
 	case DeptModeFull:
 		fmt.Printf("The dept1 is a DeptModeFull.\n")
@@ -63,4 +71,6 @@ func Test() {
 	if _, ok := interface{}(deptPtr1).(DeptModeB); ok {
 		fmt.Printf("The deptPtr1 is a DeptModeB.\n")
 	}
+
+	deptPtr1.SetName1("aaa")
 }

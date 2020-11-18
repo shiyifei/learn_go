@@ -2,8 +2,8 @@ package practice
 
 import "fmt"
 
-func f1() (r int) {
-	t := 5
+func f1() (t int) {
+	t = 5
 	defer func() {
 		t = t + 5
 	}()
@@ -11,24 +11,31 @@ func f1() (r int) {
 }
 
 func f2() (r int) {
-	defer func(r int) int {
-		r = r + 5
-		return r
+	defer func(t int) int {
+		t = t + 5
+		return t
 	}(r)
 	return 1
 }
 
 func f2Other() (r int) {
 	r = 1
-	func(r int) {
-		r = r +5
+	func(t int) int{
+		t = t +5
+		return t
 	}(r)
 	return
 }
 
-func f3() (i int) {
-	defer func() { i++ }()
-	return 1
+func f3(j int) int {
+	j = 1
+
+	defer func() {
+		j++
+		fmt.Println("222 j=",&j, j)
+	}()
+	fmt.Println("111 j=",&j, j)
+	return j
 }
 
 func aboutCondition1() {
@@ -59,8 +66,8 @@ func TestDefer() {
 	fmt.Println("after f2(), b=", b)
 	b1 := f2Other()
 	fmt.Println("after f2Other(), b1=", b1)
-	c := f3()
-	fmt.Println("after f3(), c=", c)
+	c := f3(0)
+	fmt.Println("after f3(), c=", &c, c)
 
 	aboutCondition1()
 	aboutCondition2()
