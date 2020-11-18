@@ -101,7 +101,7 @@ func (users *MapUser) userIsExist(user User) bool {
 /**
 	打印所有用户
  */
-func (users *MapUser) printUsers() string{
+func (users *MapUser) printUsers(){
 	bytes, _ := json.Marshal(*users)
 	fmt.Printf("%s \n", bytes)
 }
