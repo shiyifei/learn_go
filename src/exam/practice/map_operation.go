@@ -5,13 +5,6 @@ import (
 	"fmt"
 )
 
-type User struct {
-	Id   int    `json:userid`
-	UserName string `json:username`
-	Age      int8   `json:age`
-	Email    string `json:email`
-}
-
 type MapUser map[int]User
 
 type MyString string
