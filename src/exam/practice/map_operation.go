@@ -7,27 +7,47 @@ import (
 
 type MapUser map[int]User
 
-var userList *MapUser
+type MyString string
+var userList MapUser
+
+
+func (s MyString) add() int {
+	var it = 0
+	fmt.Println(it)
+	return it
+}
 
 func init() {
 	//userList = make(MapUser)
-	mapA := make(MapUser)
-	userList = &mapA
+	//mapA := make(MapUser)
+	//userList = &mapA
 
-	//userList = make(new (MapUser))
+	//userList = new (MapUser)
+
+	var maps map[int]User
+	//aa := new(map[int]User)
+	maps = make(map[int]User)
+	//maps = *aa
+
+
+
+
 
 	var user User
 	user.Id = 1
 	user.UserName = "liubei"
 	user.Age = 35
 	user.Email = "liubei@1.com"
-	(*userList)[user.Id] = user
+	maps[user.Id] = user
 
 	user.Id = 2
 	user.UserName = "zhangfei"
 	user.Age = 34
 	user.Email = "zhangfei@1.com"
-	(*userList)[user.Id] = user
+	maps[user.Id] = user
+
+	fmt.Println("maps:",maps)
+	return
 }
 
 /**
@@ -81,7 +101,7 @@ func (users *MapUser) userIsExist(user User) bool {
 /**
 	打印所有用户
  */
-func (users *MapUser) printUsers() {
+func (users *MapUser) printUsers(){
 	bytes, _ := json.Marshal(*users)
 	fmt.Printf("%s \n", bytes)
 }
