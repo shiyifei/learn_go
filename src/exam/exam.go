@@ -3,9 +3,10 @@ package main
 import "exam/practice"
 
 func main() {
+
 	//测试生成分布式id
-	practice.GenerateId()
-	return
+	//practice.GenerateId()
+	//return
 
 
 	/*arrInput := [...]int{2, 7, 11, 15, 16}
@@ -24,5 +25,5 @@ func main() {
 	practice.JsonDecode()
 
 	//测试多协程编程
-	practice.TestConcurrency()
+	//practice.TestConcurrency()
 }

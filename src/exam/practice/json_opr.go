@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	mapstructure "github.com/mitchellh/mapstructure"
 	"fmt"
+	"reflect"
 )
 
 type User struct {
@@ -38,10 +39,22 @@ func init() {
 }
 
 func JsonDecode() {
-	fmt.Println("arrive in here ,JsonEncodeDecode() ")
+	//简单json串解析成结构体切片
 	jsonDecode1()
+
+	//先将json解析为map切片，然后再转换为结构体切片
 	fmt.Println("===================================================")
 	jsonDecode2()
+
+	//灵活转换为结构体切片的一种写法
+	var user User
+	var userList = make([]User, 0)
+	userList = jsonDecode3(user).Interface().([]User)
+	fmt.Printf("userList is: %#v \n", userList)
+
+	for _, v := range userList {
+		fmt.Printf("row: %#v \n", v)
+	}
 }
 
 /**
@@ -101,3 +114,58 @@ func jsonDecode2() {
 		}
 	}
 }
+
+/**
+	source 传入的一个结构体变量
+	返回结构体切片
+ */
+func jsonDecode3(source interface{}) reflect.Value {
+	var obj Response2
+	err := json.Unmarshal([]byte(strJson), &obj)
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Printf("obj is:%+v \n", obj)
+	//
+	//fmt.Printf("obj.Code is: %+v \n", obj.Code)
+	//fmt.Printf("obj.Message is: %+v \n", obj.Message)
+
+
+	sourceType := reflect.TypeOf(source)
+	//kind := reflect.Kind(source)
+
+	//fmt.Println(sourceType)
+
+	//PHP返回的json串解析时注意弱类型验证
+	config := &mapstructure.DecoderConfig{
+		WeaklyTypedInput: true,
+		Result:           &source,
+	}
+	decoder, err := mapstructure.NewDecoder(config)
+	if err != nil {
+		panic(err)
+	}
+
+	//使用第三方类库将map[string]interface() 强制转换为 []User
+	var objMap = make(map[string]interface{})
+
+	sliceType := reflect.SliceOf(sourceType)
+	retArr := reflect.MakeSlice(sliceType, 0, 0)
+
+	//fmt.Printf("retArr is: %#v \n", retArr)
+
+	for _,objMap = range obj.Data {
+		fmt.Printf("data is: %#v \n", objMap)
+
+		err = decoder.Decode(objMap)
+		if err != nil {
+			fmt.Println("err is:",err)
+		} else {
+			retArr = reflect.Append(retArr, reflect.ValueOf(source))
+			//fmt.Printf("source is:%#v \n", source)
+		}
+	}
+	//fmt.Printf("retArr is:%#v \n", retArr)
+	return retArr
+}
+
