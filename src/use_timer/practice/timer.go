@@ -7,7 +7,8 @@ import (
 	"time"
 )
 const(
-	dateTemplate = "2006-01-02 15:04:05.000"		//golang时间格式 加入毫秒显示 如果是6个0，则是微秒，3个0表示不足三位时左侧会补齐0
+	//golang时间格式 加入毫秒显示 如果是6个0，则是微秒，3个0表示不足三位时左侧会补齐0
+	TEMPLATE = "2006-01-02 15:04:05.000"
 )
 
 var wg sync.WaitGroup
@@ -20,7 +21,7 @@ func TestTimer() {
 	go func(t *time.Timer){
 		defer wg.Done()
 		<- t.C
-		fmt.Println("get timer, current time is:",time.Now().Format(dateTemplate))
+		fmt.Println("get timer, current time is:",time.Now().Format(TEMPLATE))
 
 		//Reset使t重新开始计时，本方法返回后再等待一段时间d后到期。
 		//如果调用Reset方法时，t还在等待中会返回真；t已经到期或停止了，会返回假
@@ -39,10 +40,9 @@ func TestTimer() {
 		for {
 			select {
 				case received := <- t.C	:		//注意这里的返回值是时间类型
-					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(dateTemplate), time.Now().Format(dateTemplate))
+					fmt.Printf("get ticker, received:%s, current time:%s \n", received.Format(TEMPLATE), time.Now().Format(TEMPLATE))
 					processOtherThing()
 			}
-
 		}
 	}(ticker)
 
