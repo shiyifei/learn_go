@@ -65,8 +65,6 @@ func init() {
 	task.TaskFunc = "ProcessOrder"
 	index = getPosition(list.CurrentIndex, task.Delay)
 	list.Slots[index].TaskList = append(list.Slots[index].TaskList, task)
-
-
 }
 
 /**
