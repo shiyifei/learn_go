@@ -5,11 +5,6 @@
 
 package practice
 
-import (
-	"fmt"
-	"time"
-)
-
 type IdFactory struct {
 	workerId int64
 	dataCenterId int64
@@ -18,6 +13,7 @@ type IdFactory struct {
 }
 
 func init() {
+	/*
 	fmt.Println(time.Now().Unix())
 	fmt.Println(time.Now().UnixNano())
 	//毫秒级的整数
@@ -27,7 +23,7 @@ func init() {
 	var strTime string = "2020-12-08 00:00:00"
 	var standard string = "2006-01-02 15:04:05"
 	time1,_ := time.Parse(standard, strTime)
-	fmt.Println(time1.UTC())
+	fmt.Println(time1.UTC())*/
 }
 
 func GenerateId() {

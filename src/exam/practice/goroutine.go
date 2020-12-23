@@ -28,7 +28,7 @@ func getBytes(times int, begin, end byte) []byte {
 
 var times int
 func init() {
-	times = 2000
+	times = 5000
 }
 
 func concurrency() {
@@ -42,20 +42,21 @@ func concurrency() {
 	//打印100次小写字母
 	go func() {
 		defer wg.Done()
-		printChar(times, 'a', 'z')
+		printChar(times, 'a', 'a')
 	}()
 
 	//打印100次大写字母
 	go func() {
 		defer wg.Done()
-		printChar(times, 'A', 'Z')
+		printChar(times, 'A', 'A')
 	}()
 
 	//打印100次数字
 	go func() {
 		defer wg.Done()
-		printChar(times, '0', '9')
+		printChar(times, '0', '0')
 	}()
+
 	wg.Wait()
 
 	diff :=  time.Now().Sub(begin)
@@ -145,8 +146,8 @@ func writeFileSerial() {
 }
 
 func TestConcurrency() {
-	concurrency()
-	serial()
+	//concurrency()
+	//serial()
 
 	writeFileConcurrency()
 	writeFileSerial()

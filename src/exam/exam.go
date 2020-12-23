@@ -22,8 +22,8 @@ func main() {
 	//practice.MapOperation()
 
 	//测试json转[]User
-	practice.JsonDecode()
+	//practice.JsonDecode()
 
 	//测试多协程编程
-	//practice.TestConcurrency()
+	practice.TestConcurrency()
 }
