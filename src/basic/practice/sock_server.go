@@ -18,10 +18,13 @@ import (
 	logSn = 666
 )*/
 
+/**
+ * @Description:Sock_server入口文件，开启一个线程用于服务端监听连接事件
+ */
 func Sock_server() {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go doWork(wg)
+	go doWork(&wg)
 	time.Sleep(500* time.Millisecond)
 	wg.Wait()
 }
@@ -29,7 +32,7 @@ func Sock_server() {
 /**
 	初始化socket、监听并处理读写事件
  */
-func doWork(wg sync.WaitGroup) {
+func doWork(wg *sync.WaitGroup) {
 	var listener net.Listener
 	listener, err := net.Listen(SERVER_NETWORK, SERVER_ADDRESS)
 	if err != nil {
