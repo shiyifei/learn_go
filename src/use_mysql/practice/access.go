@@ -103,6 +103,8 @@ func SelectMultiUser(offset int) {
 	//defer worker.Db.Close()
 }
 
+
+
 /*
     测试是否使用连接池
  */

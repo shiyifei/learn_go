@@ -9,7 +9,7 @@ import (
 )
 
 type Task struct {
-	CycleRound    int		//轮次
+	CycleRound  int		    //轮次
 	Delay    int			//延时多少秒执行
 	JsonData string			//传入的json字符串
 	TaskFunc string			//传入的回调函数 需要在Processor.go中定义
@@ -45,14 +45,14 @@ func init() {
 	var task Task
 	task.Delay = 22
 	task.CycleRound = getCycleRound(task.Delay)
-	task.JsonData = `{"pre_order_id":13, "userid":123}`
+	task.JsonData = `{"pre_order_id":2, "user_id":11,"op_type":100065,"app_id":301}`
 	task.TaskFunc = "ProcessOrder"
 	index := getPosition(list.CurrentIndex, task.Delay)
 	list.Slots[index].TaskList = append(list.Slots[index].TaskList, task)
 
 	task.Delay = 44
 	task.CycleRound = getCycleRound(task.Delay)
-	task.JsonData = `{"pre_order_id":14, "userid":123}`
+	task.JsonData = `{"pre_order_id":3, "user_id":22,"op_type":100066,"app_id":301}`
 	task.TaskFunc = "ProcessOrder"
 	index = getPosition(list.CurrentIndex, task.Delay)
 	list.Slots[index].TaskList = append(list.Slots[index].TaskList, task)
@@ -61,7 +61,7 @@ func init() {
 
 	task.Delay = 66
 	task.CycleRound = getCycleRound(task.Delay)
-	task.JsonData = `{"pre_order_id":15, "userid":129}`
+	task.JsonData = `{"pre_order_id":4, "user_id":33,"op_type":100067,"app_id":301}`
 	task.TaskFunc = "ProcessOrder"
 	index = getPosition(list.CurrentIndex, task.Delay)
 	list.Slots[index].TaskList = append(list.Slots[index].TaskList, task)
@@ -107,9 +107,7 @@ func StartTimer() {
 						}
 						list.Slots[list.CurrentIndex].TaskList = arrTask
 					}
-
 				}
-
 				if list.CurrentIndex == MAX-1 {
 					list.CurrentIndex = 0
 				} else {
@@ -150,6 +148,7 @@ func InvokeObjectMethod(object interface{}, methodName string, args ...interface
 	for i, param := range args {
 		inputs[i] = reflect.ValueOf(param)
 	}
+	defer MyRecover()
 	reflect.ValueOf(object).MethodByName(methodName).Call(inputs)
 }
 
@@ -159,6 +158,6 @@ func InvokeObjectMethod(object interface{}, methodName string, args ...interface
  */
 func SendOneTask(task Task) {
 	task.CycleRound = getCycleRound(task.Delay)
-	index := list.CurrentIndex + task.Delay
+	index := getPosition(list.CurrentIndex, task.Delay)
 	list.Slots[index].TaskList = append(list.Slots[index].TaskList, task)
 }
