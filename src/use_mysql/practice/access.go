@@ -1,12 +1,12 @@
 package practice
 
-import(
+import (
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
-    "time"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"net"
 	"strings"
+	"time"
 )
 
 var SqlDB *sql.DB
@@ -27,7 +27,7 @@ func init() {
 	checkErr(err)
 
     SqlDB.SetMaxOpenConns(4)
-    SqlDB.SetMaxIdleConns(2)
+    SqlDB.SetMaxOpenConns(4)
 
     //SqlDB.SetConnMaxLifetime(time.Second*10)
 }
@@ -86,9 +86,10 @@ func SelectMultiUser(offset int) {
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
-	time.Sleep(time.Second * 5) //测试连接池效果，保持db连接不释放
+	time.Sleep(time.Second * 2) //测试连接池效果，保持db连接不释放
+	var rerr error
 	for rows.Next() {
-		rerr := rows.Scan(scanArgs...)
+		rerr = rows.Scan(scanArgs...)
 		checkErr(rerr)
 		//单行
 		record := make(map[string]string)
@@ -97,7 +98,7 @@ func SelectMultiUser(offset int) {
 				record[columns[k]] = string(v)
 			}
 		}
-		fmt.Println(record)
+		//fmt.Println(record)
 	}
 	defer rows.Close()
 	//defer worker.Db.Close()
@@ -109,9 +110,9 @@ func SelectMultiUser(offset int) {
     测试是否使用连接池
  */
 func TestConnectionPool(page int) {
-    for page=0; page<10; page++ {
-		SelectMultiUser(page)
-    }
+	for i := page; i < 10+page; i++ {
+		SelectMultiUser(i)
+	}
 }
 
 func Insert(username, email string) (int64, error) {
