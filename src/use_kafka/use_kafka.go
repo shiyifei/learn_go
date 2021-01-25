@@ -9,4 +9,5 @@ package main
 
 func main() {
 	practice.SendMessage()
+	practice.ReceiveMsg()
 }
