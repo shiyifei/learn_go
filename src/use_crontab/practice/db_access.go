@@ -19,7 +19,7 @@ func init() {
 	CheckErr(err)
 
 	SqlDB.SetMaxOpenConns(4)
-	SqlDB.SetMaxIdleConns(2)
+	SqlDB.SetMaxIdleConns(4)
 	//SqlDB.SetConnMaxLifetime(time.Second*10)
 }
 
@@ -35,6 +35,7 @@ func ProcessData(data map[string]interface{}) {
 	//判断是否有该预订单id
 	rows, err := SqlDB.Query("select count(*) num from biz_pre_order where id=? and status=1", preOrderId)
 	CheckErr(err)
+	defer rows.Close()
 	retArr := selectRows(rows)
 	if len(retArr) == 0 {
 		error := errors.New(fmt.Sprintf("传入的数据非法, pre_order_id:%v \n", preOrderId))

@@ -95,7 +95,7 @@ func StartTimer() {
 							list.Slots[list.CurrentIndex].TaskList[i].CycleRound--
 						} else {
 							wg.Add(1)
-							processData(&wg, objTask.TaskFunc, objTask.JsonData)
+							go processData(&wg, objTask.TaskFunc, objTask.JsonData)
 							arrDelIndex = append(arrDelIndex, i)
 						}
 					}
