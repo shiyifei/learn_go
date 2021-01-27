@@ -5,6 +5,7 @@
 package main
 
 import(
+	"sync"
 	UseMysql "use_mysql/practice"
 	"fmt"
 )
@@ -28,13 +29,33 @@ func main() {
 	dbAccess.ExecTrans()
     **/
 
-    UseMysql.Table2Struct()
+    //UseMysql.Table2Struct()
 
 
 
     //测试数据库连接池
 	//UseMysql.SelectMultiUser(1)
-    UseMysql.TestConnectionPool(1000)
+
+	var wg sync.WaitGroup
+    wg.Add(4)
+    go func() {
+    	defer wg.Done()
+    	UseMysql.TestConnectionPool(100)
+	}()
+	go func() {
+		defer wg.Done()
+		UseMysql.TestConnectionPool(200)
+	}()
+	go func() {
+		defer wg.Done()
+		UseMysql.TestConnectionPool(300)
+	}()
+	go func() {
+		defer wg.Done()
+		UseMysql.TestConnectionPool(400)
+	}()
+    wg.Wait()
+	fmt.Println("cmplete")
 
     //注意这里的defer语句，程序运行结束后一定要关闭连接
     defer UseMysql.SqlDB.Close()

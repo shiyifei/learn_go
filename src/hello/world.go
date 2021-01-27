@@ -21,7 +21,6 @@ func sha1Encrypt(input string) string {
 }
 
 func main() {
-
 	input := "user100000"
 	output := sha1Encrypt(input)
 	fmt.Println(input, output)
